@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE KAPLA - MMA Fighter Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0a0a12;--card:#12141f;--card-hover:#1a1d2e;--accent:#FFB62B;
+--secondary:#8b5cf6;--text:#e8eaf2;--muted:#6b7280;--border:#1e2035;
+--gold-grad:linear-gradient(135deg,#FFD700,#FFA500);--legendary:#FFD700;
+--champion:#60A5FA;--green:#2ecc71;--red:#e74c3c;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:80px}
+h1,h2,h3,h4{font-family:'Press Start 2P',monospace;color:var(--accent);letter-spacing:1px}
+.screen{display:none;padding:16px;max-width:720px;margin:0 auto}
+.screen.active{display:block}
+.top-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.top-nav button{background:var(--card);border:1px solid var(--border);color:var(--muted);font-family:'Press Start 2P',monospace;font-size:7px;padding:8px 10px;border-radius:6px;cursor:pointer;transition:.2s}
+.top-nav button:hover,.top-nav button.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0e1019;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0;z-index:100}
+.bottom-nav button{background:none;border:none;color:var(--muted);font-family:'Press Start 2P',monospace;font-size:6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;transition:.2s}
+.bottom-nav button.active{color:var(--accent)}
+.bottom-nav button .icon{font-size:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;transition:.2s;cursor:pointer}
+.card:hover{background:var(--card-hover);border-color:var(--accent);transform:translateY(-2px)}
+.stat-bar{height:6px;background:#1a1d2e;border-radius:3px;overflow:hidden;margin:3px 0}
+.stat-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.stat-row{display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px}
+.stat-row span:first-child{color:var(--muted)}
+.stat-row span:last-child{color:var(--accent);font-weight:700}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:9px;font-family:'Press Start 2P',monospace;color:var(--muted);margin-bottom:5px}
+.form-group input,.form-group select{width:100%;padding:10px;background:#0e1019;border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+.btn{font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;transition:.2s;text-transform:uppercase}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:#ffcc50;transform:translateY(-1px)}
+.btn-secondary{background:var(--secondary);color:#fff}
+.btn-secondary:hover{background:#a78bfa}
+.btn-danger{background:#e74c3c;color:#fff}
+.btn-danger:hover{background:#ff6b6b}
+.btn-gold{background:var(--gold-grad);color:#000}
+.btn-gold:hover{opacity:.9}
+.btn-sm{font-size:7px;padding:8px 12px}
+.btn-block{width:100%}
+.text-center{text-align:center}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.mb-20{margin-bottom:20px}
+.mt-12{margin-top:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.badge{display:inline-block;font-family:'Press Start 2P',monospace;font-size:6px;padding:3px 7px;border-radius:4px;text-transform:uppercase}
+.badge-new{background:var(--green);color:#000}
+.badge-standard{background:var(--muted);color:#fff}
+.badge-preset{background:var(--secondary);color:#fff}
+.badge-premium{background:var(--gold-grad);color:#000}
+.badge-legendary{background:linear-gradient(135deg,#FFD700,#FFA500);color:#000}
+.badge-champion{background:linear-gradient(135deg,#60A5FA,#3B82F6);color:#fff}
+.badge-amateur{background:#6366f1;color:#fff}
+.badge-pro{background:#22c55e;color:#000}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.pixel-grid{display:grid;gap:1px;width:80px;height:110px}
+.pixel-cell{width:10px;height:10px;border-radius:1px}
+.fighter-card{display:flex;gap:14px;align-items:flex-start}
+.fighter-card .info{flex:1}
+.fighter-card .info h3{font-size:10px;margin-bottom:4px}
+.fighter-card .info .nickname{font-size:12px;color:var(--secondary);font-style:italic;margin-bottom:6px}
+.fighter-card .info .meta{font-size:11px;color:var(--muted);margin-bottom:8px}
+.fighter-card .info .meta span{margin-right:12px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+.money-display{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--green)}
+.section-title{font-size:11px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.premium-card{position:relative;overflow:hidden}
+.premium-card .aura{position:absolute;inset:-2px;border-radius:12px;opacity:0;animation:aura-pulse 2s ease-in-out infinite;z-index:0}
+@keyframes aura-pulse{0%,100%{opacity:0}50%{opacity:.4}}
+.premium-card:hover .aura{opacity:.3}
+.toast{position:fixed;top:20px;right:20px;background:var(--card);border:1px solid var(--accent);color:var(--text);padding:12px 20px;border-radius:8px;font-size:12px;z-index:200;animation:slide-in .3s;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+@keyframes slide-in{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.placeholder-screen{text-align:center;padding:60px 20px;color:var(--muted)}
+.placeholder-screen .big-icon{font-size:48px;margin-bottom:16px}
+.placeholder-screen h3{font-size:12px;color:var(--accent);margin-bottom:12px}
+.empty-state{text-align:center;padding:40px;color:var(--muted)}
+.record-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center;margin:12px 0}
+.record-grid .stat-box{background:#0e1019;padding:8px 4px;border-radius:6px}
+.record-grid .stat-box .num{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--accent)}
+.record-grid .stat-box .lbl{font-size:8px;color:var(--muted);margin-top:2px}
+.potential-bar{position:relative;height:8px;background:#1a1d2e;border-radius:4px;overflow:hidden}
+.potential-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--secondary),var(--accent))}
+.potential-label{position:absolute;right:0;top:-14px;font-size:8px;color:var(--muted)}
+
+/* Sprite Animation */
+.sprite-box{display:inline-block;width:120px;height:120px;image-rendering:pixelated;position:relative}
+.sprite-box img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.fight-arena{display:flex;justify-content:space-between;align-items:flex-end;padding:20px;background:#0e1019;border-radius:12px;border:1px solid var(--border);min-height:200px;position:relative;overflow:hidden}
+.fight-arena::before{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,#1a1d2e)}
+.fighter-sprite{position:relative;z-index:1;transition:transform .3s}
+.fighter-sprite.attacking{animation:attack .4s ease-out}
+.fighter-sprite.hurt{animation:hurt .3s ease-out}
+@keyframes attack{0%{transform:translateX(0)}50%{transform:translateX(30px) scale(1.1)}100%{transform:translateX(0)}}
+@keyframes hurt{0%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}100%{transform:translateX(0)}}
+.fight-hud{display:flex;justify-content:space-between;margin-bottom:12px}
+.fight-hp{flex:1;height:12px;background:#1a1d2e;border-radius:6px;overflow:hidden;margin:0 6px}
+.fight-hp-fill{height:100%;border-radius:6px;transition:width .5s}
+.fight-controls{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.fight-log{max-height:120px;overflow-y:auto;font-size:10px;padding:8px;background:#0a0a12;border-radius:8px;margin-top:12px}
+.fight-log p{margin:4px 0;color:var(--muted)}
+.fight-log p.hit{color:var(--red)}
+.fight-log p.miss{color:var(--muted)}
+.fight-log p.ko{color:var(--accent);font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ===== SCREENS ===== -->
+<div id="screen-dashboard" class="screen active">
+  <div class="text-center mb-16">
+    <img src="assets/logo.svg" alt="THE KAPLA" style="max-width:200px;margin-bottom:8px;image-rendering:pixelated;">
+    <p style="color:var(--muted);font-size:10px;margin-top:4px">MMA FIGHTER MANAGER</p>
+  </div>
+  <div class="grid-2 mb-16">
+    <div class="card text-center">
+      <p style="font-size:8px;color:var(--muted);font-family:'Press Start 2P',monospace">BALANCE</p>
+      <p class="money-display" id="dash-money">$50,000</p>
+    </div>
+    <div class="card text-center">
+      <p style="font-size:8px;color:var(--muted);font-family:'Press Start 2P',monospace">MANAGED</p>
+      <p class="money-display" id="dash-fighters">0</p>
+    </div>
+  </div>
+  <div class="top-nav mb-16" id="dash-nav">
+    <button onclick="showScreen('roster')">Roster</button>
+    <button onclick="showScreen('presets')">Presets</button>
+    <button onclick="showScreen('premium')">Premium</button>
+    <button onclick="showScreen('fight')">Fight</button>
+  </div>
+  <h4 class="section-title mb-12">MY FIGHTERS</h4>
+  <div id="dash-roster"></div>
+  <hr class="divider">
+  <div class="text-center">
+    <button class="btn btn-danger btn-sm" onclick="resetCareer()">Reset Career</button>
+  </div>
+</div>
+
+<div id="screen-roster" class="screen">
+  <h3 style="font-size:12px;margin-bottom:4px">ROSTER</h3>
+  <p style="color:var(--muted);font-size:10px;margin-bottom:16px">All fighters in the database</p>
+  <div id="roster-list"></div>
+</div>
+
+<div id="screen-profile" class="screen">
+  <button class="btn btn-sm btn-secondary mb-12" onclick="goBack()">&larr; Back</button>
+  <div id="profile-content"></div>
+</div>
+
+<div id="screen-create" class="screen">
+  <h3 style="font-size:12px;margin-bottom:16px">CREATE FIGHTER</h3>
+  <form id="create-form" onsubmit="return createFighter(event)">
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="cf-name" placeholder="e.g. Marcus Johnson" required>
+    </div>
+    <div class="form-group">
+      <label>Nickname *</label>
+      <input type="text" id="cf-nickname" placeholder="e.g. The Beast" required>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nationality *</label>
+        <input type="text" id="cf-nationality" placeholder="e.g. USA" required>
+      </div>
+      <div class="form-group">
+        <label>Age *</label>
+        <input type="number" id="cf-age" min="18" max="45" placeholder="25" required>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Weight Class *</label>
+        <select id="cf-weight" required>
+          <option value="">Select...</option>
+          <option>Strawweight</option><option>Flyweight</option><option>Bantamweight</option>
+          <option>Featherweight</option><option>Lightweight</option><option>Welterweight</option>
+          <option>Middleweight</option><option>Light Heavyweight</option><option>Heavyweight</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fighting Style *</label>
+        <select id="cf-style" required>
+          <option value="">Select...</option>
+          <option>Boxer</option><option>Muay Thai</option><option>Wrestler</option>
+          <option>BJJ</option><option>All-Rounder</option>
+        </select>
+      </div>
+    </div>
+    <h4 class="section-title" style="font-size:9px;margin-top:20px">APPEARANCE</h4>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Body Type</label>
+        <select id="cf-body">
+          <option>Athletic</option><option>Muscular</option><option>Lean</option><option>Stocky</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Hair</label>
+        <select id="cf-hair">
+          <option value="#1a1a2e">Black</option><option value="#4a3728">Brown</option>
+          <option value="#c4a35a">Blonde</option><option value="#8b2500">Red</option>
+          <option value="#d4d4d4">White</option><option value="none">Bald</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Skin Tone</label>
+        <select id="cf-skin">
+          <option value="#F5D0A9">Light</option><option value="#D4A574">Tan</option>
+          <option value="#C68642">Medium</option><option value="#8D5524">Dark</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Shorts</label>
+        <select id="cf-shorts">
+          <option value="#e74c3c">Red</option><option value="#3498db">Blue</option>
+          <option value="#2ecc71">Green</option><option value="#f39c12">Orange</option>
+          <option value="#9b59b6">Purple</option><option value="#1abc9c">Teal</option>
+          <option value="#e67e22">Dark Orange</option><option value="#2c3e50">Navy</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Gloves</label>
+        <select id="cf-gloves">
+          <option value="#c0392b">Red</option><option value="#2980b9">Blue</option>
+          <option value="#27ae60">Green</option><option value="#f1c40f">Gold</option>
+          <option value="#8e44ad">Purple</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block mt-12">Create Fighter</button>
+  </form>
+</div>
+
+<div id="screen-presets" class="screen">
+  <h3 style="font-size:12px;margin-bottom:4px">PRESET FIGHTERS</h3>
+  <p style="color:var(--muted);font-size:10px;margin-bottom:16px">Ready-made fighters to add to your team</p>
+  <div id="presets-list"></div>
+</div>
+
+<div id="screen-premium" class="screen">
+  <h3 style="font-size:12px;margin-bottom:4px">PREMIUM FIGHTERS</h3>
+  <p style="color:var(--muted);font-size:10px;margin-bottom:16px">Elite fighters with unique traits and passive abilities</p>
+  <div id="premium-list"></div>
+</div>
+
+<div id="screen-training" class="screen">
+  <div class="placeholder-screen">
+    <div class="big-icon">🥊</div>
+    <h3>COMING SOON</h3>
+    <p>Training system is under development.<br>Improve your fighters' stats and unlock new abilities.</p>
+  </div>
+</div>
+
+<div id="screen-career" class="screen">
+  <div class="placeholder-screen">
+    <div class="big-icon">🏆</div>
+    <h3>COMING SOON</h3>
+    <p>Career mode is under development.<br>Build your legacy as a manager.</p>
+  </div>
+</div>
+
+<div id="screen-fight" class="screen">
+  <h3 style="font-size:12px;margin-bottom:4px">FIGHT NIGHT</h3>
+  <p style="color:var(--muted);font-size:10px;margin-bottom:16px">Select your fighter and opponent</p>
+  
+  <div id="fight-select">
+    <div class="form-group">
+      <label>Your Fighter</label>
+      <select id="fight-your-fighter"><option value="">Select fighter...</option></select>
+    </div>
+    <div class="form-group">
+      <label>Opponent</label>
+      <select id="fight-opponent"><option value="">Select opponent...</option></select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="startFight()">START FIGHT</button>
+  </div>
+
+  <div id="fight-arena" style="display:none">
+    <div class="fight-hud">
+      <div style="flex:1;text-align:left">
+        <div style="font-size:9px;font-family:'Press Start 2P',monospace;color:var(--accent)" id="fight-name-left">FIGHTER 1</div>
+        <div class="fight-hp"><div class="fight-hp-fill" id="fight-hp-left" style="width:100%;background:var(--green)"></div></div>
+      </div>
+      <div style="font-size:9px;font-family:'Press Start 2P',monospace;color:var(--muted)" id="fight-round">ROUND 1</div>
+      <div style="flex:1;text-align:right">
+        <div style="font-size:9px;font-family:'Press Start 2P',monospace;color:var(--secondary)" id="fight-name-right">FIGHTER 2</div>
+        <div class="fight-hp"><div class="fight-hp-fill" id="fight-hp-right" style="width:100%;background:var(--secondary)"></div></div>
+      </div>
+    </div>
+
+    <div class="fight-arena">
+      <div class="fighter-sprite" id="sprite-left">
+        <img src="assets/sprites/idle.png" alt="Fighter 1">
+      </div>
+      <div class="fighter-sprite" id="sprite-right" style="transform:scaleX(-1)">
+        <img src="assets/sprites/idle.png" alt="Fighter 2">
+      </div>
+    </div>
+
+    <div class="fight-log" id="fight-log"></div>
+
+    <div class="fight-controls">
+      <button class="btn btn-primary btn-sm" onclick="fightAction('punch')">Punch</button>
+      <button class="btn btn-primary btn-sm" onclick="fightAction('kick')">Kick</button>
+      <button class="btn btn-primary btn-sm" onclick="fightAction('takedown')">Takedown</button>
+      <button class="btn btn-primary btn-sm" onclick="fightAction('block')">Block</button>
+      <button class="btn btn-danger btn-sm" onclick="endFight()">Surrender</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="active" data-screen="dashboard" onclick="showScreen('dashboard')">
+    <span class="icon">🏠</span>Home
+  </button>
+  <button data-screen="roster" onclick="showScreen('roster')">
+    <span class="icon">👥</span>Roster
+  </button>
+  <button data-screen="create" onclick="showScreen('create')">
+    <span class="icon">➕</span>Create
+  </button>
+  <button data-screen="training" onclick="showScreen('training')">
+    <span class="icon">🏋️</span>Train
+  </button>
+  <button data-screen="career" onclick="showScreen('career')">
+    <span class="icon">🏆</span>Career
+  </button>
+</nav>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toast-container"></div>
+
+<script>
+// ============================================================
+// DATA & STATE
+// ============================================================
+const STORAGE_KEY = 'kapla_save';
+
+const SKIN_COLORS = { Light:'#F5D0A9', Medium:'#C68642', Dark:'#8D5524', Tan:'#D4A574' };
+const HAIR_COLORS = { Black:'#1a1a2e', Brown:'#4a3728', Blonde:'#c4a35a', Red:'#8b2500', White:'#d4d4d4' };
+
+const DEFAULT_PRESETS = [
+  {
+    id:'p1', name:'Jax Reyes', nickname:'Ironfist', nationality:'Philippines', age:26,
+    weightClass:'Welterweight', fightingStyle:'Boxer', tier:'Preset',
+    thumbnail:'assets/fighters/jax-reyes.png',
+    record:{wins:12,losses:3,draws:1,koWins:8,subWins:1},
+    stats:{punchPower:88,kickPower:45,accuracy:82,strikingDefense:78,wrestling:55,takedown:42,takedownDefense:70,bjj:35,submission:30,strength:80,speed:75,cardio:72,chin:82,recovery:68,fightIQ:75,composure:70,aggression:85},
+    career:{level:'Pro',potential:72,experience:60,morale:78,trainingProgress:30},
+    appearance:{bodyType:'Muscular',hair:'#1a1a2e',skinTone:'#D4A574',shortsColor:'#e74c3c',gloveColor:'#c0392b'}
+  },
+  {
+    id:'p2', name:'Ryuan Kai', nickname:'The Hammer', nationality:'Thailand', age:24,
+    weightClass:'Middleweight', fightingStyle:'Muay Thai', tier:'Preset',
+    thumbnail:'assets/fighters/ryuan-kai.png',
+    record:{wins:15,losses:2,draws:0,koWins:10,subWins:2},
+    stats:{punchPower:78,kickPower:92,accuracy:80,strikingDefense:75,wrestling:60,takedown:55,takedownDefense:65,bjj:40,submission:38,strength:78,speed:80,cardio:82,chin:78,recovery:72,fightIQ:78,composure:72,aggression:80},
+    career:{level:'Pro',potential:80,experience:55,morale:82,trainingProgress:25},
+    appearance:{bodyType:'Athletic',hair:'#1a1a2e',skinTone:'#C68642',shortsColor:'#3498db',gloveColor:'#2980b9'}
+  },
+  {
+    id:'p3', name:'Dante Cole', nickname:'Lockdown', nationality:'USA', age:28,
+    weightClass:'Light Heavyweight', fightingStyle:'Wrestler', tier:'Preset',
+    thumbnail:'assets/fighters/dante-cole.png',
+    record:{wins:18,losses:4,draws:0,koWins:5,subWins:6},
+    stats:{punchPower:65,kickPower:40,accuracy:70,strikingDefense:68,wrestling:95,takedown:92,takedownDefense:88,bjj:55,submission:50,strength:90,speed:68,cardio:78,chin:85,recovery:75,fightIQ:80,composure:82,aggression:75},
+    career:{level:'Pro',potential:68,experience:70,morale:75,trainingProgress:40},
+    appearance:{bodyType:'Stocky',hair:'#4a3728',skinTone:'#8D5524',shortsColor:'#2ecc71',gloveColor:'#27ae60'}
+  },
+  {
+    id:'p4', name:'Niko Vale', nickname:'Silent Hands', nationality:'Brazil', age:25,
+    weightClass:'Lightweight', fightingStyle:'BJJ', tier:'Preset',
+    thumbnail:'assets/fighters/niko-vale.png',
+    record:{wins:14,losses:2,draws:2,koWins:3,subWins:9},
+    stats:{punchPower:55,kickPower:60,accuracy:75,strikingDefense:72,wrestling:68,takedown:72,takedownDefense:70,bjj:95,submission:92,strength:65,speed:82,cardio:80,chin:70,recovery:78,fightIQ:88,composure:85,aggression:55},
+    career:{level:'Pro',potential:78,experience:52,morale:80,trainingProgress:20},
+    appearance:{bodyType:'Lean',hair:'#1a1a2e',skinTone:'#D4A574',shortsColor:'#9b59b6',gloveColor:'#8e44ad'}
+  },
+  {
+    id:'p5', name:'Kairo Morgan', nickname:'Apex', nationality:'USA', age:27,
+    weightClass:'Middleweight', fightingStyle:'All-Rounder', tier:'Preset',
+    thumbnail:'assets/fighters/kairo-morgan-preset.png',
+    record:{wins:16,losses:3,draws:1,koWins:6,subWins:4},
+    stats:{punchPower:80,kickPower:78,accuracy:82,strikingDefense:80,wrestling:80,takedown:78,takedownDefense:82,bjj:78,submission:75,strength:82,speed:80,cardio:85,chin:80,recovery:78,fightIQ:83,composure:80,aggression:78},
+    career:{level:'Pro',potential:85,experience:62,morale:82,trainingProgress:35},
+    appearance:{bodyType:'Athletic',hair:'#4a3728',skinTone:'#8D5524',shortsColor:'#f39c12',gloveColor:'#f1c40f'}
+  }
+];
+
+const DEFAULT_PREMIUM = [
+  {
+    id:'x1', name:'Kairo "Apex" Morgan', nickname:'Apex', nationality:'USA', age:27,
+    weightClass:'Middleweight', fightingStyle:'All-Rounder', tier:'Premium', premiumTier:'LEGENDARY',
+    trait:'Apex Mindset', passive:'Apex Mindset', passiveDesc:'+5 Fight IQ during Round 3',
+    auraColor:'#FFD700',
+    thumbnail:'assets/fighters/kairo-apex.png',
+    record:{wins:24,losses:2,draws:0,koWins:10,subWins:6},
+    stats:{punchPower:86,kickPower:84,accuracy:88,strikingDefense:85,wrestling:84,takedown:82,takedownDefense:86,bjj:83,submission:80,strength:85,speed:84,cardio:90,chin:85,recovery:82,fightIQ:90,composure:88,aggression:82},
+    career:{level:'Pro',potential:95,experience:85,morale:92,trainingProgress:60},
+    appearance:{bodyType:'Athletic',hair:'#4a3728',skinTone:'#8D5524',shortsColor:'#f39c12',gloveColor:'#f1c40f'}
+  },
+  {
+    id:'x2', name:'Victor "Golden Era" Stone', nickname:'Golden Era', nationality:'USA', age:32,
+    weightClass:'Welterweight', fightingStyle:'Boxer', tier:'Premium', premiumTier:'LEGENDARY',
+    trait:'Veteran Timing', passive:'Veteran Timing', passiveDesc:'Small counter-striking bonus',
+    auraColor:'#FFA500',
+    thumbnail:'assets/fighters/victor-stone.png',
+    record:{wins:30,losses:4,draws:1,koWins:22,subWins:2},
+    stats:{punchPower:94,kickPower:35,accuracy:92,strikingDefense:90,wrestling:48,takedown:35,takedownDefense:75,bjj:30,submission:25,strength:82,speed:80,cardio:78,chin:88,recovery:80,fightIQ:92,composure:90,aggression:80},
+    career:{level:'Pro',potential:90,experience:95,morale:88,trainingProgress:50},
+    appearance:{bodyType:'Muscular',hair:'#c4a35a',skinTone:'#F5D0A9',shortsColor:'#2c3e50',gloveColor:'#f1c40f'}
+  },
+  {
+    id:'x3', name:'Malik "The Wall" Cross', nickname:'The Wall', nationality:'Nigeria', age:29,
+    weightClass:'Heavyweight', fightingStyle:'Wrestler', tier:'Premium', premiumTier:'CHAMPION',
+    trait:'Iron Base', passive:'Iron Base', passiveDesc:'Improved takedown defense when stamina is high',
+    auraColor:'#60A5FA',
+    thumbnail:'assets/fighters/malik-cross.png',
+    record:{wins:22,losses:1,draws:0,koWins:8,subWins:9},
+    stats:{punchPower:72,kickPower:45,accuracy:70,strikingDefense:72,wrestling:96,takedown:94,takedownDefense:95,bjj:60,submission:55,strength:92,speed:70,cardio:82,chin:90,recovery:80,fightIQ:85,composure:88,aggression:78},
+    career:{level:'Pro',potential:92,experience:80,morale:90,trainingProgress:45},
+    appearance:{bodyType:'Stocky',hair:'#1a1a2e',skinTone:'#8D5524',shortsColor:'#3498db',gloveColor:'#2980b9'}
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = null;
+
+function getDefaultState() {
+  return {
+    money: 50000,
+    record: { wins:0, losses:0, draws:0, koWins:0, subWins:0 },
+    fighters: [],
+    allFighters: JSON.parse(JSON.stringify([...DEFAULT_PRESETS, ...DEFAULT_PREMIUM])),
+    fighterIdCounter: 100
+  };
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      state = JSON.parse(saved);
+      if (!state.allFighters) state.allFighters = JSON.parse(JSON.stringify([...DEFAULT_PRESETS, ...DEFAULT_PREMIUM]));
+      if (!state.fighterIdCounter) state.fighterIdCounter = 100;
+    } else {
+      state = getDefaultState();
+    }
+  } catch(e) {
+    state = getDefaultState();
+  }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function resetCareer() {
+  if (!confirm('Reset all progress? This cannot be undone!')) return;
+  state = getDefaultState();
+  saveState();
+  showScreen('dashboard');
+  toast('Career reset!');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+let currentScreen = 'dashboard';
+let history = ['dashboard'];
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+
+  document.querySelectorAll('.bottom-nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.screen === name);
+  });
+
+  if (name !== currentScreen) history.push(name);
+  currentScreen = name;
+
+  renderScreen(name);
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  history.pop();
+  const prev = history.pop() || 'dashboard';
+  showScreen(prev);
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+function renderScreen(name) {
+  switch(name) {
+    case 'dashboard': renderDashboard(); break;
+    case 'roster': renderRoster(); break;
+    case 'presets': renderPresets(); break;
+    case 'premium': renderPremium(); break;
+    case 'fight': renderFightSelect(); break;
+    case 'profile': break;
+  }
+}
+
+function renderDashboard() {
+  document.getElementById('dash-money').textContent = '$' + state.money.toLocaleString();
+  document.getElementById('dash-fighters').textContent = state.fighters.length;
+
+  const container = document.getElementById('dash-roster');
+  if (state.fighters.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>No fighters yet. Create one or add from Presets/Premium.</p></div>';
+    return;
+  }
+  container.innerHTML = state.fighters.map(id => {
+    const f = state.allFighters.find(x => x.id === id);
+    if (!f) return '';
+    return renderFighterMiniCard(f);
+  }).join('');
+}
+
+function renderRoster() {
+  const container = document.getElementById('roster-list');
+  if (state.allFighters.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>No fighters in database.</p></div>';
+    return;
+  }
+  container.innerHTML = state.allFighters.map(f => renderFighterMiniCard(f)).join('');
+}
+
+function renderPresets() {
+  const container = document.getElementById('presets-list');
+  container.innerHTML = DEFAULT_PRESETS.map(f => {
+    const managed = state.fighters.includes(f.id);
+    return `
+      <div class="card mb-12" onclick="showProfile('${f.id}')">
+        <div class="fighter-card">
+          ${renderPixelArt(f, 64, 88)}
+          <div class="info">
+            <h3>${f.name}</h3>
+            <div class="nickname">"${f.nickname}"</div>
+            <div class="meta">
+              <span class="badge badge-preset">Preset</span>
+              <span>${f.fightingStyle}</span> &middot; <span>${f.nationality}</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted)">Overall: <span style="color:var(--accent);font-weight:700">${calcOverall(f)}</span></div>
+            ${managed ? '<div style="font-size:9px;color:var(--green);margin-top:4px">✓ On Your Team</div>' : `<button class="btn btn-primary btn-sm mt-12" onclick="event.stopPropagation();addFighter('${f.id}')">Add to Team ($5,000)</button>`}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPremium() {
+  const container = document.getElementById('premium-list');
+  container.innerHTML = DEFAULT_PREMIUM.map(f => {
+    const managed = state.fighters.includes(f.id);
+    const aura = f.premiumTier === 'LEGENDARY' ? 'var(--legendary)' : 'var(--champion)';
+    return `
+      <div class="premium-card card mb-12" onclick="showProfile('${f.id}')">
+        <div class="aura" style="background:${aura};box-shadow:0 0 30px ${aura}"></div>
+        <div class="fighter-card" style="position:relative;z-index:1">
+          ${renderPixelArt(f, 64, 88)}
+          <div class="info">
+            <h3>${f.name}</h3>
+            <div class="nickname">"${f.nickname}"</div>
+            <div class="meta">
+              <span class="badge ${f.premiumTier === 'LEGENDARY' ? 'badge-legendary' : 'badge-champion'}">${f.premiumTier}</span>
+              <span>${f.fightingStyle}</span> &middot; <span>${f.nationality}</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Overall: <span style="color:var(--accent);font-weight:700">${calcOverall(f)}</span></div>
+            <div style="font-size:9px;color:var(--secondary);margin-bottom:4px">${f.trait}: ${f.passiveDesc}</div>
+            ${managed ? '<div style="font-size:9px;color:var(--green)">✓ On Your Team</div>' : `<button class="btn btn-gold btn-sm mt-12" onclick="event.stopPropagation();addFighter('${f.id}')">Sign ($15,000)</button>`}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showProfile(id) {
+  const f = state.allFighters.find(x => x.id === id);
+  if (!f) return;
+  const managed = state.fighters.includes(id);
+  const ov = calcOverall(f);
+
+  const statLabels = {
+    punchPower:'Punch Power', kickPower:'Kick Power', accuracy:'Accuracy',
+    strikingDefense:'Striking Def', wrestling:'Wrestling', takedown:'Takedowns',
+    takedownDefense:'Takedown Def', bjj:'BJJ', submission:'Submission',
+    strength:'Strength', speed:'Speed', cardio:'Cardio', chin:'Chin',
+    recovery:'Recovery', fightIQ:'Fight IQ', composure:'Composure', aggression:'Aggression'
+  };
+
+  let html = `
+    <div class="card mb-16">
+      <div class="fighter-card">
+        ${renderPixelArt(f, 80, 110)}
+        <div class="info">
+          <h3 style="font-size:13px">${f.name}</h3>
+          <div class="nickname" style="font-size:14px">"${f.nickname}"</div>
+          <div class="meta">
+            ${f.tier === 'Premium' ? `<span class="badge ${f.premiumTier === 'LEGENDARY' ? 'badge-legendary' : 'badge-champion'}">${f.premiumTier}</span>` : `<span class="badge badge-${f.tier.toLowerCase()}">${f.tier}</span>`}
+            &middot; <span>${f.fightingStyle}</span> &middot; <span>${f.nationality}</span>
+          </div>
+          <div class="meta">
+            <span>Age: ${f.age}</span> &middot; <span>${f.weightClass}</span> &middot; <span>${f.appearance.bodyType}</span>
+          </div>
+          <div style="margin-top:8px;font-size:11px">Overall: <span style="color:var(--accent);font-weight:700;font-size:14px">${ov}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (f.tier === 'Premium') {
+    html += `
+      <div class="card mb-16" style="border-color:${f.auraColor || '#FFD700'}">
+        <h4 style="font-size:9px;margin-bottom:8px">${f.trait}</h4>
+        <p style="font-size:11px;color:var(--text)">${f.passiveDesc}</p>
+      </div>
+    `;
+  }
+
+  html += `
+    <h4 class="section-title mb-12">RECORD</h4>
+    <div class="record-grid">
+      <div class="stat-box"><div class="num">${f.record.wins}</div><div class="lbl">WINS</div></div>
+      <div class="stat-box"><div class="num">${f.record.losses}</div><div class="lbl">LOSSES</div></div>
+      <div class="stat-box"><div class="num">${f.record.draws}</div><div class="lbl">DRAWS</div></div>
+      <div class="stat-box"><div class="num">${f.record.koWins}</div><div class="lbl">KO W</div></div>
+      <div class="stat-box"><div class="num">${f.record.subWins}</div><div class="lbl">SUB W</div></div>
+    </div>
+  `;
+
+  html += `<h4 class="section-title mb-12">STATS</h4><div class="stat-grid mb-16">`;
+  for (const [key, label] of Object.entries(statLabels)) {
+    const val = f.stats[key] || 0;
+    const color = val >= 85 ? 'var(--green)' : val >= 65 ? 'var(--accent)' : val >= 45 ? '#f39c12' : 'var(--red)';
+    html += `
+      <div>
+        <div class="stat-row"><span>${label}</span><span>${val}</span></div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:${val}%;background:${color}"></div></div>
+      </div>
+    `;
+  }
+  html += `</div>`;
+
+  html += `
+    <h4 class="section-title mb-12">CAREER</h4>
+    <div class="card mb-16">
+      <div class="stat-row mb-8"><span>Level</span><span><span class="badge badge-amateur">${f.career.level}</span></span></div>
+      <div class="stat-row mb-8"><span>Morale</span><span>${f.career.morale}/100</span></div>
+      <div class="stat-row mb-8"><span>Experience</span><span>${f.career.experience}</span></div>
+      <div style="margin-top:8px">
+        <div style="font-size:9px;color:var(--muted);margin-bottom:3px">Potential: ${f.career.potential}/100</div>
+        <div class="potential-bar"><div class="potential-bar-fill" style="width:${f.career.potential}%"></div></div>
+      </div>
+    </div>
+  `;
+
+  html += `<div style="display:flex;gap:8px;flex-wrap:wrap">`;
+  if (!managed && f.tier === 'Preset') {
+    html += `<button class="btn btn-primary btn-sm" onclick="addFighter('${f.id}')">Add to Team ($5,000)</button>`;
+  }
+  if (!managed && f.tier === 'Premium') {
+    html += `<button class="btn btn-gold btn-sm" onclick="addFighter('${f.id}')">Sign ($15,000)</button>`;
+  }
+  if (managed) {
+    html += `<button class="btn btn-danger btn-sm" onclick="removeFighter('${f.id}')">Release Fighter</button>`;
+  }
+  html += `<button class="btn btn-secondary btn-sm" onclick="goBack()">Back</button></div>`;
+
+  document.getElementById('profile-content').innerHTML = html;
+  showScreen('profile');
+}
+
+// ============================================================
+// PIXEL ART
+// ============================================================
+function renderPixelArt(f, w, h) {
+  // Use SVG thumbnail if available
+  if (f.thumbnail) {
+    return `<img src="${f.thumbnail}" alt="${f.name}" style="width:${w}px;height:${h}px;image-rendering:pixelated;">`;
+  }
+  // Fallback to CSS pixel art
+  const skin = f.appearance.skinTone;
+  const shorts = f.appearance.shortsColor;
+  const gloves = f.appearance.gloveColor;
+  const hair = f.appearance.hair === 'none' ? 'transparent' : f.appearance.hair;
+  const rows = 11, cols = 8;
+  const cw = w / cols, ch = h / rows;
+
+  const grid = [
+    // row 0 - top of head
+    ['T','T','H','H','H','H','T','T'],
+    // row 1 - head
+    ['T','H','H','H','H','H','H','T'],
+    // row 2 - face
+    ['T','H','S','S','S','S','H','T'],
+    // row 3 - neck/shoulders
+    ['T','G','S','S','S','S','G','T'],
+    // row 4 - torso
+    ['T','G','S','S','S','S','G','T'],
+    // row 5 - torso
+    ['T','T','S','S','S','S','T','T'],
+    // row 6 - shorts top
+    ['T','T','H2','H2','H2','H2','T','T'],
+    // row 7 - shorts
+    ['T','T','H2','H2','H2','H2','T','T'],
+    // row 8 - legs
+    ['T','T','S','T','T','S','T','T'],
+    // row 9 - legs
+    ['T','T','S','T','T','S','T','T'],
+    // row 10 - feet
+    ['T','T','D','T','T','D','T','T']
+  ];
+
+  let html = `<div class="pixel-grid" style="width:${w}px;height:${h}px;grid-template-columns:repeat(${cols},${cw}px);grid-template-rows:repeat(${rows},${ch}px)">`;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = grid[r][c];
+      let color;
+      switch(cell) {
+        case 'S': color = skin; break;
+        case 'H': color = hair; break;
+        case 'G': color = gloves; break;
+        case 'H2': color = shorts; break;
+        case 'D': color = '#333'; break;
+        default: color = 'transparent'; break;
+      }
+      html += `<div class="pixel-cell" style="background:${color}"></div>`;
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+// FIGHTER MANAGEMENT
+// ============================================================
+function calcOverall(f) {
+  const s = f.stats;
+  const keys = Object.keys(s);
+  return Math.round(keys.reduce((sum, k) => sum + s[k], 0) / keys.length);
+}
+
+function addFighter(id) {
+  const f = state.allFighters.find(x => x.id === id);
+  if (!f) return;
+  if (state.fighters.includes(id)) { toast('Already on your team!'); return; }
+
+  const cost = f.tier === 'Premium' ? 15000 : 5000;
+  if (state.money < cost) { toast('Not enough money!'); return; }
+
+  state.money -= cost;
+  state.fighters.push(id);
+  saveState();
+  toast(`${f.name} added to your team!`);
+
+  if (currentScreen === 'presets') renderPresets();
+  else if (currentScreen === 'premium') renderPremium();
+  else if (currentScreen === 'roster') renderRoster();
+}
+
+function removeFighter(id) {
+  const f = state.allFighters.find(x => x.id === id);
+  if (!f) return;
+  if (!confirm(`Release ${f.name}?`)) return;
+
+  state.fighters = state.fighters.filter(x => x.id !== id);
+  saveState();
+  toast(`${f.name} released.`);
+  goBack();
+}
+
+// ============================================================
+// CREATE FIGHTER
+// ============================================================
+function generateStats(style) {
+  const base = {};
+  const styles = {
+    'Boxer': { punchPower:[82,95], kickPower:[30,50], accuracy:[75,90], strikingDefense:[70,85], wrestling:[40,60], takedown:[30,50], takedownDefense:[60,78], bjj:[25,40], submission:[20,35], strength:[70,85], speed:[65,80], cardio:[60,78], chin:[72,88], recovery:[60,75], fightIQ:[70,85], composure:[65,80], aggression:[75,90] },
+    'Muay Thai': { punchPower:[70,82], kickPower:[85,95], accuracy:[72,85], strikingDefense:[68,82], wrestling:[45,65], takedown:[40,58], takedownDefense:[55,72], bjj:[30,45], submission:[28,40], strength:[68,82], speed:[70,85], cardio:[75,88], chin:[70,85], recovery:[62,78], fightIQ:[70,82], composure:[62,78], aggression:[72,88] },
+    'Wrestler': { punchPower:[55,70], kickPower:[30,48], accuracy:[60,75], strikingDefense:[60,75], wrestling:[88,98], takedown:[85,96], takedownDefense:[80,95], bjj:[45,60], submission:[40,55], strength:[82,95], speed:[60,75], cardio:[70,82], chin:[78,90], recovery:[65,80], fightIQ:[72,85], composure:[75,88], aggression:[68,82] },
+    'BJJ': { punchPower:[48,62], kickPower:[52,68], accuracy:[68,80], strikingDefense:[65,78], wrestling:[60,75], takedown:[65,78], takedownDefense:[62,76], bjj:[88,98], submission:[85,96], strength:[58,72], speed:[75,88], cardio:[72,85], chin:[62,76], recovery:[70,85], fightIQ:[80,92], composure:[78,90], aggression:[48,62] },
+    'All-Rounder': { punchPower:[72,85], kickPower:[70,82], accuracy:[72,85], strikingDefense:[70,84], wrestling:[72,84], takedown:[70,82], takedownDefense:[72,85], bjj:[68,82], submission:[65,78], strength:[72,85], speed:[72,85], cardio:[72,85], chin:[72,85], recovery:[70,84], fightIQ:[72,85], composure:[70,84], aggression:[68,82] }
+  };
+
+  const ranges = styles[style] || styles['All-Rounder'];
+  const stats = {};
+  for (const [key, [min, max]] of Object.entries(ranges)) {
+    stats[key] = Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  return stats;
+}
+
+function createFighter(e) {
+  e.preventDefault();
+  const name = document.getElementById('cf-name').value.trim();
+  const nickname = document.getElementById('cf-nickname').value.trim();
+  const nationality = document.getElementById('cf-nationality').value.trim();
+  const age = parseInt(document.getElementById('cf-age').value);
+  const weightClass = document.getElementById('cf-weight').value;
+  const fightingStyle = document.getElementById('cf-style').value;
+
+  if (!name || !nickname || !nationality || !age || !weightClass || !fightingStyle) {
+    toast('Please fill all required fields!');
+    return false;
+  }
+
+  const id = 'f' + (++state.fighterIdCounter);
+  const stats = generateStats(fightingStyle);
+
+  const fighter = {
+    id, name, nickname, nationality, age, weightClass, fightingStyle,
+    tier: 'Standard',
+    overall: 0,
+    record: { wins:0, losses:0, draws:0, koWins:0, subWins:0 },
+    stats,
+    career: {
+      level: 'Amateur',
+      potential: Math.floor(Math.random() * 30) + 60,
+      experience: 0,
+      morale: Math.floor(Math.random() * 30) + 60,
+      trainingProgress: 0
+    },
+    appearance: {
+      bodyType: document.getElementById('cf-body').value,
+      hair: document.getElementById('cf-hair').value,
+      skinTone: document.getElementById('cf-skin').value,
+      shortsColor: document.getElementById('cf-shorts').value,
+      gloveColor: document.getElementById('cf-gloves').value
+    }
+  };
+
+  fighter.overall = calcOverall(fighter);
+  state.allFighters.push(fighter);
+  state.fighters.push(id);
+  saveState();
+
+  document.getElementById('create-form').reset();
+  toast(`${name} created!`);
+  showScreen('roster');
+  return false;
+}
+
+// ============================================================
+// FIGHT SIMULATION
+// ============================================================
+let fightState = null;
+
+function renderFightSelect() {
+  const yourSel = document.getElementById('fight-your-fighter');
+  const oppSel = document.getElementById('fight-opponent');
+  yourSel.innerHTML = '<option value="">Select fighter...</option>';
+  oppSel.innerHTML = '<option value="">Select opponent...</option>';
+  
+  state.fighters.forEach(id => {
+    const f = state.allFighters.find(x => x.id === id);
+    if (f) yourSel.innerHTML += `<option value="${id}">${f.name} (${calcOverall(f)})</option>`;
+  });
+  
+  state.allFighters.forEach(f => {
+    if (!state.fighters.includes(f.id)) {
+      oppSel.innerHTML += `<option value="${f.id}">${f.name} (${calcOverall(f)})</option>`;
+    }
+  });
+}
+
+function startFight() {
+  const yourId = document.getElementById('fight-your-fighter').value;
+  const oppId = document.getElementById('fight-opponent').value;
+  if (!yourId || !oppId) { toast('Select both fighters!'); return; }
+  
+  const you = state.allFighters.find(x => x.id === yourId);
+  const opp = state.allFighters.find(x => x.id === oppId);
+  if (!you || !opp) return;
+  
+  fightState = {
+    you, opp,
+    yourHp: 100, oppHp: 100,
+    round: 1, maxRounds: 3,
+    log: []
+  };
+  
+  document.getElementById('fight-name-left').textContent = you.name.toUpperCase();
+  document.getElementById('fight-name-right').textContent = opp.name.toUpperCase();
+  document.getElementById('fight-hp-left').style.width = '100%';
+  document.getElementById('fight-hp-right').style.width = '100%';
+  document.getElementById('fight-round').textContent = 'ROUND 1';
+  document.getElementById('fight-log').innerHTML = '';
+  document.getElementById('fight-select').style.display = 'none';
+  document.getElementById('fight-arena').style.display = 'block';
+  
+  addFightLog(`Fight started: ${you.name} vs ${opp.name}!`);
+}
+
+function addFightLog(msg, cls) {
+  const log = document.getElementById('fight-log');
+  const p = document.createElement('p');
+  p.textContent = msg;
+  if (cls) p.className = cls;
+  log.appendChild(p);
+  log.scrollTop = log.scrollHeight;
+}
+
+function fightAction(action) {
+  if (!fightState) return;
+  const { you, opp } = fightState;
+  
+  const yourOvr = calcOverall(you);
+  const oppOvr = calcOverall(opp);
+  
+  let damage = 0;
+  let sprite = '';
+  let oppSprite = '';
+  
+  switch(action) {
+    case 'punch':
+      damage = Math.max(5, Math.floor((yourOvr * 0.3 + Math.random() * 20) - (oppOvr * 0.15)));
+      sprite = 'assets/sprites/punch.png';
+      oppSprite = 'assets/sprites/hurt.png';
+      addFightLog(`${you.name} throws a punch! ${damage > 0 ? 'Hit!' : 'Missed!'}`, damage > 0 ? 'hit' : 'miss');
+      break;
+    case 'kick':
+      damage = Math.max(3, Math.floor((yourOvr * 0.35 + Math.random() * 18) - (oppOvr * 0.18)));
+      sprite = 'assets/sprites/kick.png';
+      oppSprite = 'assets/sprites/hurt.png';
+      addFightLog(`${you.name} throws a kick! ${damage > 0 ? 'Hit!' : 'Missed!'}`, damage > 0 ? 'hit' : 'miss');
+      break;
+    case 'takedown':
+      damage = Math.max(4, Math.floor((yourOvr * 0.25 + Math.random() * 15) - (oppOvr * 0.12)));
+      sprite = 'assets/sprites/takedown.png';
+      oppSprite = 'assets/sprites/ground.png';
+      addFightLog(`${you.name} goes for a takedown! ${damage > 0 ? 'Success!' : 'Blocked!'}`, damage > 0 ? 'hit' : 'miss');
+      break;
+    case 'block':
+      damage = -Math.floor(Math.random() * 8);
+      sprite = 'assets/sprites/block.png';
+      addFightLog(`${you.name} blocks and recovers!`, 'miss');
+      break;
+  }
+  
+  // Animate
+  const spriteLeft = document.getElementById('sprite-left');
+  const spriteRight = document.getElementById('sprite-right');
+  spriteLeft.querySelector('img').src = sprite;
+  spriteLeft.classList.add('attacking');
+  setTimeout(() => { spriteLeft.classList.remove('attacking'); spriteLeft.querySelector('img').src = 'assets/sprites/idle.png'; }, 400);
+  
+  if (damage > 0) {
+    fightState.oppHp = Math.max(0, fightState.oppHp - damage);
+    spriteRight.querySelector('img').src = oppSprite;
+    spriteRight.classList.add('hurt');
+    setTimeout(() => { spriteRight.classList.remove('hurt'); spriteRight.querySelector('img').src = 'assets/sprites/idle.png'; }, 300);
+  }
+  
+  document.getElementById('fight-hp-right').style.width = fightState.oppHp + '%';
+  
+  // Opponent counter-attack
+  setTimeout(() => {
+    const counterDmg = Math.max(2, Math.floor((oppOvr * 0.2 + Math.random() * 12) - (yourOvr * 0.1)));
+    fightState.yourHp = Math.max(0, fightState.yourHp - counterDmg);
+    document.getElementById('fight-hp-left').style.width = fightState.yourHp + '%';
+    addFightLog(`${opp.name} counters! -${counterDmg} HP`, 'hit');
+    
+    spriteRight.querySelector('img').src = 'assets/sprites/punch.png';
+    spriteRight.classList.add('attacking');
+    setTimeout(() => { spriteRight.classList.remove('attacking'); spriteRight.querySelector('img').src = 'assets/sprites/idle.png'; }, 400);
+    
+    if (fightState.yourHp <= 0) {
+      addFightLog(`KO! ${opp.name} wins!`, 'ko');
+      endFight();
+    } else if (fightState.oppHp <= 0) {
+      addFightLog(`KO! ${you.name} wins!`, 'ko');
+      endFight();
+    }
+  }, 500);
+}
+
+function endFight() {
+  if (!fightState) return;
+  const { you, opp, yourHp, oppHp } = fightState;
+  
+  if (yourHp > oppHp) {
+    you.record.wins++;
+    opp.record.losses++;
+    state.money += 5000;
+    addFightLog(`${you.name} WINS! +$5,000`, 'ko');
+  } else {
+    you.record.losses++;
+    opp.record.wins++;
+    addFightLog(`${opp.name} wins.`, 'hit');
+  }
+  
+  saveState();
+  setTimeout(() => {
+    document.getElementById('fight-select').style.display = 'block';
+    document.getElementById('fight-arena').style.display = 'none';
+    fightState = null;
+    renderFightSelect();
+  }, 2000);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, 2500);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+renderDashboard();
+</script>
+</body>
+</html>

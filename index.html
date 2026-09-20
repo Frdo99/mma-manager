@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOLZ — Web Templates & Digital Applications</title>
+  <meta name="description" content="DOLZ is your hub for web templates and digital applications. Browse, discover and open ready-to-use web apps.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header" id="header">
+    <div class="header-inner container">
+      <a href="#" class="logo">DOLZ</a>
+      <nav class="nav" id="nav">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#my-system" class="nav-link nav-cta">My System</a>
+        <a href="#templates" class="nav-link">Templates</a>
+        <a href="#categories" class="nav-link">Categories</a>
+        <a href="#about" class="nav-link">About</a>
+      </nav>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="hero-inner container">
+      <div class="hero-badge">Templates & Applications</div>
+      <h1 class="hero-title">DOLZ</h1>
+      <p class="hero-subtitle">Your Hub for Web Templates & Applications</p>
+      <p class="hero-description">Explore a growing collection of useful, modern and ready-to-use web applications.</p>
+      <a href="#templates" class="btn btn-primary">Explore Templates</a>
+    </div>
+    <div class="hero-glow"></div>
+  </section>
+
+  <section class="templates-section systems-section" id="my-system">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">My Systems</h2>
+        <p class="section-subtitle">Custom-built systems designed for you — each one ready for its own web app</p>
+      </div>
+      <div class="template-grid" id="systemGrid"></div>
+    </div>
+  </section>
+
+  <section class="templates-section" id="templates">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Explore Templates</h2>
+        <p class="section-subtitle">Discover our collection of web applications and digital tools</p>
+      </div>
+
+      <div class="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search templates...">
+      </div>
+
+      <div class="categories" id="categories">
+        <button class="category-btn active" data-category="All">All</button>
+        <button class="category-btn" data-category="Business">Business</button>
+        <button class="category-btn" data-category="Marketing">Marketing</button>
+        <button class="category-btn" data-category="Productivity">Productivity</button>
+        <button class="category-btn" data-category="Fitness">Fitness</button>
+        <button class="category-btn" data-category="Games">Games</button>
+        <button class="category-btn" data-category="Tools">Tools</button>
+        <button class="category-btn" data-category="Other">Other</button>
+      </div>
+
+      <div class="template-grid" id="templateGrid"></div>
+
+      <div class="no-results" id="noResults">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>No templates found</p>
+        <span>Try a different search term or category</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-card">
+        <h2 class="section-title">About DOLZ</h2>
+        <p class="about-text">DOLZ is a collection of web applications and digital tools built to make everyday tasks simpler, faster and more accessible.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="#" class="logo">DOLZ</a>
+          <p class="footer-tagline">Web Templates & Digital Applications</p>
+        </div>
+        <div class="footer-links">
+          <a href="#hero">Home</a>
+          <a href="#templates">Templates</a>
+          <a href="#categories">Categories</a>
+          <a href="#about">About</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 DOLZ. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

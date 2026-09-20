@@ -1,0 +1,12 @@
+/*
+!/.github
+!/.gitignore
+!/AGENTS.md
+!/apps
+!/apps/the-kapla
+!/apps/the-kapla/**
+!/assets
+!/index.html
+!/style.css
+!/script.js
+/root/

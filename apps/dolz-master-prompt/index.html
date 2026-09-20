@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dolz Master Prompt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F6F7FB;
+      --card: #FFFFFF;
+      --card-soft: #FBFBFE;
+      --border: #E9EBF2;
+      --border-strong: #DCDEE8;
+      --text: #262934;
+      --muted: #8A8FA3;
+      --dim: #B4B8C8;
+      --blue: #7C9BFF;
+      --blue-deep: #5B7CF8;
+      --blue-soft: #EDF2FF;
+      --purple: #A78BFA;
+      --purple-deep: #8B5CF6;
+      --purple-soft: #F4F0FF;
+      --yellow: #FFD979;
+      --yellow-soft: #FFF6DE;
+      --green: #3ECF8E;
+      --red: #F0647A;
+      --red-soft: #FFEDF0;
+      --shadow: 0 6px 22px rgba(31, 38, 135, 0.07);
+      --shadow-lg: 0 18px 50px rgba(31, 38, 135, 0.14);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #12141C;
+      --card: #1B1E29;
+      --card-soft: #20232F;
+      --border: #2A2E3D;
+      --border-strong: #363B4E;
+      --text: #EDEFF7;
+      --muted: #9BA0B5;
+      --dim: #6D7286;
+      --blue: #8FA8FF;
+      --blue-deep: #7C9BFF;
+      --blue-soft: #232A45;
+      --purple: #B5A0FF;
+      --purple-deep: #A78BFA;
+      --purple-soft: #2A2440;
+      --yellow: #FFD979;
+      --yellow-soft: #3A3323;
+      --green: #3ECF8E;
+      --red: #F0647A;
+      --red-soft: #3A2330;
+      --shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea, select { font-family: inherit; color: inherit; }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    /* ================= HEADER ================= */
+    .app-head {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue-deep), var(--purple-deep));
+      box-shadow: 0 4px 12px rgba(124, 155, 255, 0.4);
+    }
+
+    .nav-views {
+      display: flex;
+      gap: 4px;
+      margin: 0 auto;
+      background: var(--card-soft);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav-view {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .nav-view:hover { color: var(--text); }
+
+    .nav-view.active {
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+    }
+
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .searchbox {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .searchbox svg {
+      position: absolute;
+      left: 13px;
+      width: 16px;
+      height: 16px;
+      color: var(--dim);
+      pointer-events: none;
+    }
+
+    .searchbox input {
+      width: 210px;
+      padding: 10px 34px 10px 38px;
+      font-size: 13.5px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card-soft);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, width 0.25s;
+    }
+
+    .searchbox input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px var(--blue-soft);
+      width: 240px;
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-search.visible { display: flex; }
+    .clear-search:hover { color: var(--text); }
+
+    .btn-new {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      background: linear-gradient(135deg, var(--blue-deep), var(--purple-deep));
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 999px;
+      box-shadow: 0 5px 16px rgba(124, 155, 255, 0.35);
+      transition: transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-new:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(124, 155, 255, 0.45); }
+    .btn-new:active { transform: translateY(0); }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover { color: var(--blue-deep); border-color: var(--blue); background: var(--blue-soft); }
+
+    .icon-btn svg { width: 18px; height: 18px; }
+
+    /* ================= WORKSPACE ================= */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ---------- library ---------- */
+    .library {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .lib-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 22px 22px 10px;
+    }
+
+    .lib-head h2 { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+
+    .lib-count { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+
+    .chips {
+      display: flex;
+      gap: 7px;
+      padding: 8px 22px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-wrap: nowrap;
+    }
+
+    .chips::-webkit-scrollbar { display: none; }
+
+    .chips.toggle { display: none; }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 13px;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .chip:hover { color: var(--text); border-color: var(--border-strong); }
+
+    .chip.active {
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      border-color: transparent;
+    }
+
+    .chip.extra {
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+    }
+
+    .lib-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pl-card {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding: 14px 14px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s, transform 0.15s;
+      position: relative;
+    }
+
+    .pl-card:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+
+    .pl-card.selected {
+      background: var(--blue-soft);
+      border-color: var(--blue);
+    }
+
+    .pl-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .pl-ic {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pl-title { font-size: 14.5px; font-weight: 700; line-height: 1.3; }
+
+    .pl-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .pl-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+
+    .pl-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+    }
+
+    .pl-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .pl-meta { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); font-weight: 500; }
+
+    .pl-cat {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--blue-deep);
+      background: var(--blue-soft);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .fav-btn {
+      border: none;
+      background: transparent;
+      color: var(--dim);
+      padding: 4px;
+      display: flex;
+      border-radius: 8px;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .fav-btn svg { width: 17px; height: 17px; }
+
+    .fav-btn:hover svg { transform: scale(1.2); }
+
+    .fav-btn.active { color: var(--yellow); }
+    .fav-btn.active svg { fill: var(--yellow); }
+
+    @keyframes favPop {
+      0% { transform: scale(0.5); color: var(--yellow); }
+      60% { transform: scale(1.35); }
+      100% { transform: scale(1); color: var(--yellow); }
+    }
+
+    .fav-btn.anim { animation: favPop 0.35s ease; }
+
+    /* empty states in list */
+    .empty-basic {
+      padding: 50px 30px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .empty-basic svg { width: 42px; height: 42px; color: var(--dim); }
+    .empty-basic b { color: var(--text); font-size: 15px; }
+
+    /* ---------- editor ---------- */
+    .editor {
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--card);
+      padding: 26px 30px 40px;
+      position: relative;
+    }
+
+    .back-btn { display: none; }
+
+    .editor-empty {
+      height: 100%;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      color: var(--muted);
+      padding: 40px;
+    }
+
+    .editor-empty svg { width: 64px; height: 64px; color: var(--dim); }
+
+    .editor-empty h3 { font-size: 18px; font-weight: 800; color: var(--text); }
+
+    .editor-empty p { font-size: 13.5px; max-width: 300px; line-height: 1.5; }
+
+    .editor-empty .btn-new { margin-top: 8px; }
+
+    .ed-title {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      background: transparent;
+      padding: 0 0 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .ed-title::placeholder { color: var(--dim); }
+
+    .ed-desc {
+      width: 100%;
+      border: 1px solid var(--border);
+      outline: none;
+      font-size: 13.5px;
+      color: var(--muted);
+      background: var(--card-soft);
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .ed-desc:focus { border-color: var(--blue); }
+
+    .ed-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .ed-cat-select {
+      border: 1px solid var(--border);
+      background: var(--card-soft);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue-deep);
+      padding: 8px 16px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .ed-date { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+
+    .ed-date b { color: var(--text); font-weight: 600; }
+
+    .ed-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+
+    .chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: all 0.18s;
+    }
+
+    .chip-btn:hover { color: var(--blue-deep); border-color: var(--blue); background: var(--blue-soft); }
+
+    .chip-btn svg { width: 15px; height: 15px; }
+
+    .chip-btn.fav-on { color: var(--yellow); border-color: var(--yellow); background: var(--yellow-soft); }
+    .chip-btn.fav-on svg { fill: var(--yellow); }
+
+    .f-lbl {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .tag-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-soft);
+      margin-bottom: 10px;
+      min-height: 46px;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .tag-pill button {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.7;
+      padding: 0 2px;
+    }
+
+    .tag-pill button:hover { opacity: 1; }
+
+    .tag-input {
+      flex: 1;
+      min-width: 120px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .ed-content {
+      width: 100%;
+      min-height: 40vh;
+      resize: vertical;
+      border: 1px solid var(--border);
+      outline: none;
+      background: var(--card-soft);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13.5px;
+      line-height: 1.7;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      white-space: pre-wrap;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .ed-content:focus { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
+
+    .ed-content::placeholder { color: var(--dim); font-family: var(--font); }
+
+    .ed-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .danger-btn {
+      border: 1px solid var(--red);
+      background: var(--red-soft);
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      transition: all 0.18s;
+    }
+
+    .danger-btn:hover { background: var(--red); color: #fff; }
+
+    .ed-foot-right { display: flex; align-items: center; gap: 10px; }
+
+    .ghost-btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      transition: all 0.18s;
+    }
+
+    .ghost-btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+    .save-btn {
+      border: none;
+      background: linear-gradient(135deg, var(--blue-deep), var(--purple-deep));
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 5px 16px rgba(124, 155, 255, 0.35);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .save-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(124, 155, 255, 0.45); }
+
+    /* ================= MODALS ================= */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(20, 22, 35, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 26px;
+      animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+
+    .modal p { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin-bottom: 18px; }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+
+    .set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+    .set-row:last-of-type { border-bottom: none; }
+
+    .set-row .lbl { font-size: 13.5px; font-weight: 600; }
+    .set-row .sub { font-size: 12px; color: var(--muted); }
+
+    .set-right { display: flex; gap: 8px; align-items: center; }
+
+    .seg {
+      display: flex;
+      background: var(--card-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .seg button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+
+    .seg button.active { background: var(--card); color: var(--blue-deep); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+    .mini-btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+
+    .mini-btn:hover { color: var(--blue-deep); border-color: var(--blue); }
+
+    .mini-btn.danger { color: var(--red); border-color: var(--red); }
+    .mini-btn.danger:hover { background: var(--red); color: #fff; }
+
+    .modal select {
+      border: 1px solid var(--border);
+      background: var(--card-soft);
+      border-radius: 8px;
+      font-size: 12.5px;
+      padding: 7px 10px;
+      outline: none;
+    }
+
+    .modal input[type="text"] {
+      border: 1px solid var(--border);
+      background: var(--card-soft);
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .modal input[type="text"]:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px var(--blue-soft);
+    }
+
+    /* ================= TOAST ================= */
+    .toasts {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--text);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 11px 18px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.hide { opacity: 0; transform: translateX(12px); transition: all 0.25s; }
+
+    .toast .t-ic { color: var(--green); }
+
+    @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes zoomIn { from { opacity: 0; transform: scale(0.94) translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 980px) {
+      body { overflow: visible; }
+      .workspace { grid-template-columns: 1fr; overflow: visible; }
+
+      .app-head {
+        flex-wrap: wrap;
+        padding: 12px 14px;
+        gap: 10px;
+        position: sticky;
+        top: 0;
+      }
+
+      .nav-views {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 4px;
+      }
+
+      .nav-view { padding: 7px 14px; font-size: 13px; }
+
+      .brand { font-size: 15px; }
+      .brand-mark { width: 30px; height: 30px; font-size: 15px; }
+      .searchbox { flex: 1; }
+      .searchbox input { width: 100%; }
+      .searchbox input:focus { width: 100%; }
+
+      .library { border-right: none; border-bottom: 1px solid var(--border); }
+
+      .editor { display: none; min-height: 0; padding: 18px 16px 30px; }
+
+      body.show-editor .library { display: none; }
+      body.show-editor .editor { display: block; min-height: calc(100dvh - 110px); }
+
+      .back-btn { display: flex; margin-bottom: 14px; }
+
+      .ed-content { min-height: 45vh; }
+    }
+
+    @media (max-width: 520px) {
+      .btn-new span { display: none; }
+      .btn-new { padding: 10px 13px; }
+      .editor { padding: 14px 12px 26px; }
+      .ed-title { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-head">
+    <div class="brand">
+      <div class="brand-mark">D</div>
+      <span>Dolz Master Prompt</span>
+    </div>
+
+    <nav class="nav-views" id="navViews">
+      <button class="nav-view active" data-view="all">All</button>
+      <button class="nav-view" data-view="prompts">Prompts</button>
+      <button class="nav-view" data-view="favorites">Favorites</button>
+      <button class="nav-view" data-view="categories">Categories</button>
+    </nav>
+
+    <div class="head-actions">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" placeholder="Search prompts..." autocomplete="off">
+        <button class="clear-search" id="clearSearch" aria-label="Clear search">&times;</button>
+      </div>
+      <button class="btn-new" id="newBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>New Prompt</span>
+      </button>
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="workspace" id="workspace">
+
+    <!-- LIBRARY -->
+    <aside class="library" id="library">
+
+      <div class="lib-head">
+        <div>
+          <h2 id="listTitle">All Prompts</h2>
+          <span class="lib-count" id="listCount"></span>
+        </div>
+        <button class="icon-btn" id="filterBtn" aria-label="Toggle categories">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </button>
+      </div>
+
+      <div class="chips" id="chips"></div>
+
+      <div class="lib-list" id="libList"></div>
+
+    </aside>
+
+    <!-- EDITOR -->
+    <section class="editor" id="editor">
+      <button class="icon-btn back-btn" id="backBtn" aria-label="Back to prompts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <div id="editorInner"></div>
+    </section>
+
+  </div>
+
+  <!-- CONFIRM MODAL -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="modal">
+      <h3 id="confirmTitle">Delete this prompt?</h3>
+      <p id="confirmMsg">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="confirmCancel">Cancel</button>
+        <button class="danger-btn" id="confirmOk">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="modal" style="max-width: 480px;">
+      <h3>Settings</h3>
+
+      <div class="set-row">
+        <div>
+          <div class="lbl">Appearance</div>
+          <div class="sub">Choose your theme</div>
+        </div>
+        <div class="set-right seg">
+          <button data-theme-val="light" class="active">Light</button>
+          <button data-theme-val="dark">Dark</button>
+        </div>
+      </div>
+
+      <div class="set-row">
+        <div>
+          <div class="lbl">Default category</div>
+          <div class="sub">Pre-selected for new prompts</div>
+        </div>
+        <div class="set-right">
+          <select id="setDefaultCat"></select>
+        </div>
+      </div>
+
+      <div class="set-row">
+        <div>
+          <div class="lbl">Data</div>
+          <div class="sub">Export or import your prompt library</div>
+        </div>
+        <div class="set-right">
+          <button class="mini-btn" id="exportBtn">Export</button>
+          <label class="mini-btn" for="importInput">Import
+            <input type="file" id="importInput" accept=".json,application/json" hidden>
+          </label>
+        </div>
+      </div>
+
+      <div class="set-row">
+        <div>
+          <div class="lbl">Clear all data</div>
+          <div class="sub">Permanently remove every prompt</div>
+        </div>
+        <div class="set-right">
+          <button class="mini-btn danger" id="clearDataBtn">Clear all</button>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 18px;">
+        <button class="ghost-btn" id="settingsClose">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW CATEGORY MODAL -->
+  <div class="overlay" id="catOverlay">
+    <div class="modal" style="max-width: 360px;">
+      <h3>New category</h3>
+      <p>Pick a name for your custom category. You will see it in filters and the prompt editor.</p>
+      <input type="text" id="newCatInput" class="record-name-input" style="width:100%; margin-bottom: 14px;" placeholder="e.g. Photography" maxlength="30" autocomplete="off">
+      <div class="modal-actions">
+        <button class="ghost-btn" id="catCancel">Cancel</button>
+        <button class="save-btn" id="catSave">Create category</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script>
+  /* ============================================================
+     DOLZ MASTER PROMPT
+     Prompt library + AI note manager (localStorage persist)
+     ============================================================ */
+
+  const LS_PROMPTS = 'dmp-prompts-v1';
+  const LS_SETTINGS = 'dmp-settings-v1';
+
+  const DEFAULT_CATEGORIES = [
+    'All', 'Marketing', 'Image', 'Video', 'Business', 'Social Media',
+    'MMA', 'Fitness', 'Coding', 'Website', 'App', 'Game', 'Other'
+  ];
+
+  const CAT_ICONS = {
+    Marketing: 'M', Image: 'IMG', Video: 'V', Business: 'B', 'Social Media': 'SM',
+    MMA: 'MMA', Fitness: 'F', Coding: '</>', Website: 'WWW', App: 'A', Game: 'G', Other: 'O'
+  };
+
+  const CAT_COLORS = {
+    Marketing: 'linear-gradient(135deg,#7C9BFF,#A78BFA)',
+    Image: 'linear-gradient(135deg,#F6AE5B,#FFD979)',
+    Video: 'linear-gradient(135deg,#A78BFA,#7C9BFF)',
+    Business: 'linear-gradient(135deg,#3ECF8E,#7C9BFF)',
+    'Social Media': 'linear-gradient(135deg,#FF8FA8,#A78BFA)',
+    MMA: 'linear-gradient(135deg,#5B5170,#9B8FC0)',
+    Fitness: 'linear-gradient(135deg,#FF9A62,#FFD979)',
+    Coding: 'linear-gradient(135deg,#4A5568,#7C9BFF)',
+    Website: 'linear-gradient(135deg,#7C9BFF,#3ECF8E)',
+    App: 'linear-gradient(135deg,#5B7CF8,#7C9BFF)',
+    Game: 'linear-gradient(135deg,#F0647A,#FF8FA8)',
+    Other: 'linear-gradient(135deg,#9BA0B5,#C9CDD9)'
+  };
+
+  let prompts = [];
+  let settings = { theme: 'light', defaultCategory: 'All', extraCategories: [] };
+  let state = { view: 'all', category: 'All', query: '', editing: false, draftId: null };
+  let formTags = [];
+  let nextId = 1;
+
+  /* ---------------- helpers ---------------- */
+
+  const $ = (id) => document.getElementById(id);
+  const uid = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function getAllCategories() {
+    const list = ['All'];
+    DEFAULT_CATEGORIES.slice(1).forEach((c) => { if (!list.includes(c)) list.push(c); });
+    (settings.extraCategories || []).forEach((c) => { if (!list.includes(c)) list.push(c); });
+    prompts.forEach((p) => { if (p.category && !list.includes(p.category)) list.push(p.category); });
+    return list;
+  }
+
+  function catIcon(cat) {
+    return CAT_ICONS[cat] || (cat ? cat.slice(0, 3).toUpperCase() : 'O');
+  }
+
+  function catGrad(cat) {
+    return CAT_COLORS[cat] || 'linear-gradient(135deg,#7C9BFF,#A78BFA)';
+  }
+
+  function relTime(iso) {
+    if (!iso) return '';
+    const diff = Date.now() - new Date(iso).getTime();
+    const min = 60e3, hr = 3600e3, day = 86400e3;
+    if (diff < min) return 'Just now';
+    if (diff < hr) return Math.floor(diff / min) + ' min ago';
+    if (diff < day) return Math.floor(diff / hr) + ' hr ago';
+    if (diff < day * 7) return Math.floor(diff / day) + ' day' + (Math.floor(diff / day) > 1 ? 's' : '') + ' ago';
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function fmtDate(iso) {
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function toast(msg, ok) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<span class="t-ic">' + (ok ? '&#10003;' : '&#9888;&#65039;') + '</span><span>' + esc(msg) + '</span>';
+    $('toasts').appendChild(el);
+    setTimeout(() => { el.classList.add('hide'); setTimeout(() => el.remove(), 260); }, 2200);
+  }
+
+  function savePrompts() { localStorage.setItem(LS_PROMPTS, JSON.stringify(prompts)); }
+  function saveSettings() { localStorage.setItem(LS_SETTINGS, JSON.stringify(settings)); }
+
+  /* ---------------- seed samples ---------------- */
+
+  function hub(id, off) {
+    const base = Date.now();
+    return { createdAt: new Date(base - off - 86400000).toISOString(), updatedAt: new Date(base - off).toISOString() };
+  }
+
+  function seedData() {
+    const t = hub;
+    prompts = [
+      {
+        id: uid(), title: 'Premium Product Photography Prompt',
+        description: 'Create a premium product photography scene for ecommerce.',
+        category: 'Image', favorite: false,
+        tags: ['#product', '#photography', '#ecommerce', '#studio'],
+        content:
+`Create a realistic premium product photography scene featuring the provided product reference.
+
+Requirements:
+- Use a clean, minimalist studio background
+- Lighting should be soft, diffused and slightly warm
+- Add subtle reflections on a glossy surface
+- Keep the product as the sharp focal point
+
+Output format:
+1. Scene description
+2. Lighting setup (lights, modifiers, angles)
+3. Camera settings suggestion (f-stop, shutter, ISO)
+4. Composition notes
+5. Post-processing steps
+
+Style: premium ecommerce hero image, high resolution, no text overlay.`,
+        ...t(0, 2 * 3600e3)
+      },
+      {
+        id: uid(), title: 'TikTok Product Marketing Prompt',
+        description: 'Generate a short-form TikTok marketing video script for a product.',
+        category: 'Marketing', favorite: true,
+        tags: ['#tiktok', '#marketing', '#video', '#script'],
+        content:
+`Act as an expert TikTok ads creator. Generate a complete short-form video script for the product provided.
+
+Structure the script as JSON:
+
+{
+  "hook": ["0-2s attention-grabbing opening line"],
+  "problem": ["show the pain point the product solves"],
+  "solution": ["product reveal + key benefit"],
+  "proof": ["quick social proof or demo"],
+  "cta": ["call to action with urgency"],
+  "captions": ["on-screen text lines"],
+  "hashtags": ["tiktok", "fyp", "viral"]
+}
+
+Deliver 3 variations with different hooks (curiosity, pain, comparison).
+Keep each script under 30 seconds.`,
+        ...t(1, 5 * 3600e3)
+      },
+      {
+        id: uid(), title: 'Google Flow Video Prompt',
+        description: 'Build a video editing workflow using Google Flow.',
+        category: 'Video', favorite: false,
+        tags: ['#googleflow', '#video', '#workflow', '#editing'],
+        content:
+`Create a Google Flow video automation prompt that:
+1. Ingests raw video clips from a Drive folder
+2. Auto-detects scene changes
+3. Adds branded intro and outro cards
+4. Generates a timeline summary
+5. Exports the final cut to the output Drive folder
+
+The prompt must handle up to 10 source clips per run.
+
+Add error handling steps:
+- Missing input folder -> log and stop
+- Clip longer than 10 minutes -> split automatically
+- Audio normalization before export
+
+Return the generated workflow as step-by-step instructions with exact menu paths.`,
+        ...t(2, 9 * 3600e3)
+      },
+      {
+        id: uid(), title: 'MMA Training Program Prompt',
+        description: 'Design a realistic 8-week MMA training program.',
+        category: 'MMA', favorite: false,
+        tags: ['#mma', '#training', '#fitness', '#program'],
+        content:
+`Create a realistic 8-week MMA training program for an amateur fighter.
+
+Split the program into phases:
+- Weeks 1-2: Foundations (technique + conditioning)
+- Weeks 3-5: Pressure training (sparring intensity increases)
+- Weeks 6-7: Peak strength and speed
+- Week 8: Taper and fight prep
+
+Weekly schedule (6 days):
+Monday - Striking technique
+Tuesday - Wrestling / Takedowns
+Wednesday - Conditioning (HIIT + strength)
+Thursday - BJJ / Groundwork
+Friday - Sparring rounds (3x5 min)
+Saturday - Active recovery / film study
+Sunday - Rest
+
+For each session provide: warm-up, main drills, cool-down, and target reps/duration.`,
+        ...t(3, 86400e3)
+      },
+      {
+        id: uid(), title: 'Website Landing Page Prompt',
+        description: 'Generate a high-converting landing page structure.',
+        category: 'Website', favorite: true,
+        tags: ['#landing', '#website', '#copywriting', '#conversion'],
+        content:
+`Act as a senior conversion copywriter and UI strategist. Build a complete landing page plan for the provided product.
+
+Sections required:
+1. Hero - headline, subheadline, primary CTA
+2. Social proof bar - logos, stats
+3. Problem / agitation
+4. Solution features (3-6 cards)
+5. How it works (3 steps)
+6. Testimonials (3 quotes)
+7. Pricing table
+8. FAQ (5 items)
+9. Final CTA
+
+For every section deliver:
+- Copy (headline + body)
+- Suggested layout
+- CTA button text
+
+Include accessibility notes and mobile responsiveness considerations.`,
+        ...t(4, 2 * 86400e3)
+      },
+      {
+        id: uid(), title: 'Android App Builder Prompt',
+        description: 'Generate a structured Android app build plan.',
+        category: 'App', favorite: false,
+        tags: ['#android', '#kotlin', '#app', '#architecture'],
+        content:
+`Design a production-ready Android application for the provided app concept.
+
+Deliverables:
+1. Tech stack recommendation (Kotlin, Jetpack Compose, Hilt, Retrofit, Room)
+2. App architecture diagram (MVVM with repository pattern)
+3. Module breakdown: app, core, data, domain, ui
+4. Data layer: entities, DAOs, API endpoints, repository interfaces
+5. Screen list with navigation graph
+6. Permission manifest
+7. Error handling strategy (sealed classes, retry policies)
+8. Offline-first sync flow
+9. Testing plan (unit, integration, UI)
+
+Output as structured markdown with code snippets for the key components.`,
+        ...t(5, 3 * 86400e3)
+      },
+      {
+        id: uid(), title: 'Business Marketing Strategy Prompt',
+        description: 'Create a full marketing strategy for an SME.',
+        category: 'Business', favorite: false,
+        tags: ['#marketing', '#strategy', '#business', '#sme'],
+        content:
+`Act as a fractional marketing director. Build a complete marketing strategy for an SME.
+
+Steps:
+1. Market research snapshot
+2. Target audience personas (3)
+3. Positioning statement
+4. Channel mix (organic + paid)
+5. Content pillars (4)
+6. 90-day execution calendar
+7. KPI dashboard definition
+8. Budget allocation (by channel, in %)
+9. Quarterly review framework
+
+Format the strategy with clear headings, short paragraphs, and actionable bullet points. Include a 30/60/90 day milestone table.`,
+        ...t(6, 4 * 86400e3)
+      },
+      {
+        id: uid(), title: 'AI Image Character Prompt',
+        description: 'Prompt a consistent AI-generated character across images.',
+        category: 'Image', favorite: true,
+        tags: ['#ai-image', '#character', '#midjourney', '#stable-diffusion'],
+        content:
+`Create a character consistency prompt for AI image generation.
+
+Character sheet:
+- Name: [character name]
+- Appearance: age, hair, eyes, skin tone, body type
+- Style: [art style], color palette
+- Clothing: primary outfit + 2 variants
+- Signature accessory: [unique prop]
+- Mood expressions: happy, focused, surprised, serious
+
+Base prompt template:
+
+{full character description}, {art style}, {pose/action}, {setting}, {lighting}, high detail, 8k
+
+Also include stability tips:
+- Use "--cref" or LoRA when available
+- Keep descriptions in the same order
+- Reuse the same seed for close variations
+- Describe the signature accessory in every iteration`,
+        ...t(7, 5 * 86400e3)
+      },
+      {
+        id: uid(), title: 'Social Media Content Calendar Prompt',
+        description: 'Plan 2 weeks of social media posts for any account.',
+        category: 'Social Media', favorite: false,
+        tags: ['#social-media', '#calendar', '#content', '#planning'],
+        content:
+`Generate a 14-day social media content calendar for the provided brand.
+
+For each day include:
+- Date and platform
+- Post type (static, reel, story, carousel)
+- Topic / theme
+- Caption suggestion
+- Hashtag set (5 primary + 10 secondary)
+- Best post time
+- Call to action
+
+Balance the calendar across these pillars:
+- 40% Education
+- 25% Entertainment
+- 20% Engagement
+- 15% Sales / Promotion
+
+Add a weekly hook strategy and one interactive element per week (poll, quiz, challenge).`,
+        ...t(8, 6 * 86400e3)
+      },
+      {
+        id: uid(), title: 'Fitness Workout Plan Prompt',
+        description: 'Build a progressive home workout plan.',
+        category: 'Fitness', favorite: false,
+        tags: ['#fitness', '#workout', '#plan', '#health'],
+        content:
+`Create a 5-day progressive home workout plan with no gym equipment.
+
+Day 1 - Push: push-ups (3x12), pike push-ups, dips on chair
+Day 2 - Pull: rows with towel, superman holds, reverse snow angels
+Day 3 - Legs: squats, lunges, glute bridges, calf raises
+Day 4 - Core: plank variations, hollow body holds, mountain climbers
+Day 5 - Full body HIIT: 25 minutes circuit
+
+Rules:
+- Rest 60s between sets
+- Increase reps by 10% weekly
+- Add a 5-minute warm-up and cooldown each day
+- Include a progression table for weeks 1-4
+
+Also add a diet note section: 1.6-2g protein per kg bodyweight, hydration targets, meal timing tips.`,
+        ...t(9, 7 * 86400e3)
+      }
+    ];
+    savePrompts();
+  }
+
+  /* ---------------- persistence ---------------- */
+
+  function loadData() {
+    let raw = localStorage.getItem(LS_PROMPTS);
+    if (!raw) { seedData(); return; }
+    try {
+      prompts = JSON.parse(raw);
+      if (!Array.isArray(prompts)) throw new Error('bad');
+    } catch (e) {
+      prompts = [];
+    }
+    const s = localStorage.getItem(LS_SETTINGS);
+    if (s) { try { Object.assign(settings, JSON.parse(s)); } catch (e) {} }
+    applyTheme(settings.theme);
+  }
+
+  /* ---------------- filtering ---------------- */
+
+  function getFiltered() {
+    const q = state.query.trim().toLowerCase();
+    return prompts
+      .filter((p) => {
+        if (state.view === 'favorites' && !p.favorite) return false;
+        if (state.view === 'prompts' && p.favorite) return false;
+        if (state.category !== 'All' && p.category !== state.category) return false;
+        if (!q) return true;
+        const hay = [p.title, p.description, p.category, p.content, (p.tags || []).join(' ')].join(' ').toLowerCase();
+        return hay.includes(q);
+      })
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  }
+
+  function listTitle() {
+    if (state.view === 'favorites') return 'Favorites';
+    if (state.view === 'categories') return 'By Category';
+    if (state.view === 'prompts') return 'Prompts';
+    return 'All Prompts';
+  }
+
+  function normalFilter() {
+    if (state.view === 'categories' && state.category === 'All') return prompts.length;
+    return getFiltered().length;
+  }
+
+  /* ---------------- render: navy views + chips ---------------- */
+
+  function renderNav() {
+    document.querySelectorAll('.nav-view').forEach((b) => {
+      b.classList.toggle('active', b.dataset.view === state.view);
+    });
+  }
+
+  function renderChips() {
+    const wrap = $('chips');
+    const cats = getAllCategories();
+    wrap.innerHTML = '';
+    cats.forEach((c) => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (c === state.category ? ' active' : '') + (DEFAULT_CATEGORIES.indexOf(c) === -1 ? ' extra' : '');
+      b.textContent = c;
+      b.addEventListener('click', () => {
+        state.category = c;
+        state.view = 'all';
+        renderAll();
+        toast('Filtered by ' + c, true);
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  /* ---------------- render: library list ---------------- */
+
+  function renderList() {
+    const list = $('libList');
+    const filtered = getFiltered();
+    $('listTitle').textContent = listTitle();
+    $('listCount').textContent = filtered.length + (filtered.length === 1 ? ' Prompt' : ' Prompts');
+
+    list.innerHTML = '';
+
+    if (prompts.length === 0) {
+      const d = document.createElement('div');
+      d.className = 'empty-basic';
+      d.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>' +
+        '<b>No prompts yet</b><span>Create your first master prompt and start building your personal prompt library.</span>';
+      const btn = document.createElement('button');
+      btn.className = 'btn-new'; btn.textContent = '+ Create Prompt';
+      btn.addEventListener('click', newPrompt);
+      d.appendChild(btn);
+      list.appendChild(d);
+      return;
+    }
+
+    if (filtered.length === 0 && prompts.length > 0) {
+      const d = document.createElement('div');
+      d.className = 'empty-basic';
+      d.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+        '<b>No prompts found</b><span>Try another keyword or create a new prompt.</span>';
+      list.appendChild(d);
+      return;
+    }
+
+    filtered.forEach((p) => {
+      const card = document.createElement('div');
+      card.className = 'pl-card' + (state.draftId === p.id && !state.editing ? ' selected' : '');
+      card.innerHTML =
+        '<div class="pl-top">' +
+          '<div class="pl-ic" style="background:' + catGrad(p.category) + '">' + esc(catIcon(p.category)) + '</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div class="pl-title">' + esc(p.title) + '</div>' +
+            '<div class="pl-desc">' + esc(p.description || 'No description') + '</div>' +
+          '</div>' +
+          '<button class="fav-btn' + (p.favorite ? ' active' : '') + '" data-act="fav" aria-label="Favorite">' +
+            '<svg viewBox="0 0 24 24" fill="'+ (p.favorite ? 'currentColor' : 'none') +'" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="pl-tags">' + (p.tags || []).slice(0, 3).map((t) => '<span class="pl-tag">' + esc(t) + '</span>').join('') +
+          ((p.tags || []).length > 3 ? '<span class="pl-tag">+' + (p.tags.length - 3) + '</span>' : '') + '</div>' +
+        '<div class="pl-bottom">' +
+          '<span class="pl-cat">' + esc(p.category || 'Other') + '</span>' +
+          '<span class="pl-meta">' + relTime(p.updatedAt) + '</span>' +
+        '</div>';
+
+      card.addEventListener('click', (e) => {
+        const fav = e.target.closest('[data-act="fav"]');
+        if (fav) { e.stopPropagation(); toggleFavorite(p.id); return; }
+        selectPrompt(p.id);
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  /* ---------------- editor ---------------- */
+
+  function buildCatOptions(selected) {
+    const cats = getAllCategories().filter((c) => c !== 'All');
+    let html = '';
+    cats.forEach((c) => { html += '<option value="' + esc(c) + '"' + (c === selected ? ' selected' : '') + '>' + esc(c) + '</option>'; });
+    html += '<option value="__new__">+ New category...</option>';
+    return html;
+  }
+
+  function renderEditor() {
+    const inner = $('editorInner');
+
+    if (!state.editing && state.draftId === null) {
+      inner.innerHTML =
+        '<div class="editor-empty">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>' +
+          '<h3>Select a prompt</h3>' +
+          '<p>Choose a prompt from your library or create a new master prompt.</p>' +
+          '<button class="btn-new" id="emptyNew">+ New Prompt</button>' +
+        '</div>';
+      $('emptyNew') && $('emptyNew').addEventListener('click', newPrompt);
+      return;
+    }
+
+    const existing = state.editing ? prompts.find((p) => p.id === state.draftId) : null;
+    const isNew = state.editing && !existing;
+
+    if (isNew) {
+      formTags = [];
+      const defCat = settings.defaultCategory !== 'All' ? settings.defaultCategory : (getAllCategories()[1] || 'Marketing');
+      inner.innerHTML =
+        '<div class="editor-form">' +
+          '<input class="ed-title" id="fTitle" placeholder="Prompt title" autocomplete="off">' +
+          '<input class="ed-desc" id="fDesc" placeholder="Short description" autocomplete="off">' +
+          '<div class="ed-meta">' +
+            '<select class="ed-cat-select" id="fCategory">' + buildCatOptions(defCat) + '</select>' +
+            '<span class="ed-date">New prompt</span>' +
+          '</div>' +
+          '<div class="f-lbl">Tags</div>' +
+          '<div class="tag-pills" id="tagPills"></div>' +
+          '<div class="f-lbl">Prompt</div>' +
+          '<textarea class="ed-content" id="fContent" placeholder="Paste or write your prompt here..."></textarea>' +
+          '<div class="ed-footer">' +
+            '<button class="ghost-btn" id="fCancel">Cancel</button>' +
+            '<div class="ed-foot-right"><button class="save-btn" id="fSave">Save Prompt</button></div>' +
+          '</div>' +
+        '</div>';
+    } else if (existing) {
+      formTags = (existing.tags || []).slice();
+      inner.innerHTML =
+        '<div class="editor-form">' +
+          '<input class="ed-title" id="fTitle" value="' + esc(existing.title) + '" autocomplete="off">' +
+          '<input class="ed-desc" id="fDesc" value="' + esc(existing.description || '') + '" placeholder="Short description" autocomplete="off">' +
+          '<div class="ed-meta">' +
+            '<select class="ed-cat-select" id="fCategory">' + buildCatOptions(existing.category || 'Other') + '</select>' +
+            '<span class="ed-date">Last edited: <b>' + relTime(existing.updatedAt) + '</b> \u00B7 ' + fmtDate(existing.updatedAt) + '</span>' +
+          '</div>' +
+          '<div class="ed-actions">' +
+            '<button class="chip-btn' + (existing.favorite ? ' fav-on' : '') + '" id="fFav">' +
+              '<svg viewBox="0 0 24 24" fill="'+ (existing.favorite ? 'currentColor' : 'none') +'" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favorite</button>' +
+            '<button class="chip-btn" id="fDup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> Duplicate</button>' +
+            '<button class="chip-btn" id="fCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button>' +
+          '</div>' +
+          '<div class="f-lbl">Tags</div>' +
+          '<div class="tag-pills" id="tagPills"></div>' +
+          '<div class="f-lbl">Prompt</div>' +
+          '<textarea class="ed-content" id="fContent" spellcheck="false">' + esc(existing.content) + '</textarea>' +
+          '<div class="ed-footer">' +
+            '<button class="danger-btn" id="fDelete">Delete</button>' +
+            '<div class="ed-foot-right">' +
+              '<button class="ghost-btn" id="fCancel">Cancel</button>' +
+              '<button class="save-btn" id="fSave">Save Changes</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    wireTagEditor();
+    wireFormActions(existing);
+
+    const catSel = $('fCategory');
+    if (catSel) {
+      catSel.addEventListener('change', () => {
+        if (catSel.value === '__new__') {
+          openNewCatModal();
+        }
+      });
+    }
+
+    if (isNew) setTimeout(() => $('fTitle').focus(), 60);
+  }
+
+  function renderTagPills() {
+    const wrap = $('tagPills');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    formTags.forEach((t, i) => {
+      const pill = document.createElement('span');
+      pill.className = 'tag-pill';
+      pill.textContent = '#' + t;
+      const x = document.createElement('button');
+      x.innerHTML = '&times;';
+      x.setAttribute('aria-label', 'Remove tag');
+      x.addEventListener('click', () => { formTags.splice(i, 1); renderTagPills(); });
+      pill.appendChild(x);
+      wrap.appendChild(pill);
+    });
+    const input = document.createElement('input');
+    input.className = 'tag-input';
+    input.placeholder = formTags.length ? 'Add another...' : 'Add tag and press Enter';
+    const commitTag = () => {
+      const v = input.value.trim().replace(/^#/, '');
+      if (v) { formTags.push(v); renderTagPills(); }
+    };
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        commitTag();
+      } else if (e.key === 'Backspace' && !input.value && formTags.length) {
+        formTags.pop();
+        renderTagPills();
+      }
+    });
+    input.addEventListener('blur', commitTag);
+    wrap.appendChild(input);
+  }
+
+  function wireTagEditor() {
+    renderTagPills();
+  }
+
+  function currentCategory() {
+    const sel = $('fCategory');
+    if (!sel) return 'Other';
+    if (sel.value === '__new__') return 'Other';
+    return sel.value;
+  }
+
+  function openNewCatModal() {
+    $('catOverlay').classList.add('open');
+    setTimeout(() => $('newCatInput').focus(), 60);
+  }
+
+  function closeNewCatModal() {
+    $('catOverlay').classList.remove('open');
+    $('newCatInput').value = '';
+  }
+
+  let newCatPrev = 'Marketing';
+
+  $('catSave').addEventListener('click', () => {
+    const name = ($('newCatInput').value || '').trim();
+    closeNewCatModal();
+    if (!name) return;
+    if (!(settings.extraCategories || []).includes(name)) {
+      settings.extraCategories.push(name);
+      saveSettings();
+    }
+    state.category = name;
+    newCatPrev = name;
+    const sel = $('fCategory');
+    if (sel) {
+      sel.innerHTML = buildCatOptions(name);
+      sel.value = name;
+    }
+    renderChips();
+  });
+
+  $('catCancel').addEventListener('click', () => {
+    closeNewCatModal();
+    const sel = $('fCategory');
+    if (sel && sel.value === '__new__') sel.value = newCatPrev;
+  });
+  $('catOverlay').addEventListener('click', (e) => { if (e.target === $('catOverlay')) closeNewCatModal(); });
+  $('newCatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('catSave').click(); });
+
+  function collectForm() {
+    return {
+      title: ($('fTitle').value || '').trim(),
+      description: ($('fDesc').value || '').trim(),
+      category: currentCategory(),
+      tags: formTags.slice(),
+      content: $('fContent').value
+    };
+  }
+
+  function wireFormActions(existing) {
+    const fSave = $('fSave');
+    fSave.addEventListener('click', () => saveFromForm(existing));
+
+    const fCancel = $('fCancel');
+    fCancel.addEventListener('click', () => {
+      state.editing = false;
+      if (state.draftId === null || !prompts.find((p) => p.id === state.draftId)) {
+        state.draftId = null;
+      }
+      renderAll();
+    });
+
+    if (existing) {
+      $('fFav').addEventListener('click', () => {
+        const p = prompts.find((x) => x.id === existing.id);
+        if (!p) return;
+        p.favorite = !p.favorite;
+        savePrompts();
+        renderEditor();
+        renderList();
+        toast(p.favorite ? 'Added to favorites' : 'Removed from favorites', true);
+      });
+
+      $('fDup').addEventListener('click', () => {
+        duplicatePrompt(existing.id);
+      });
+
+      $('fCopy').addEventListener('click', () => {
+        copyPrompt(existing.id);
+      });
+
+      $('fDelete').addEventListener('click', () => {
+        openConfirm('Delete this prompt?', 'This action cannot be undone.', 'Delete', () => {
+          deletePrompt(existing.id);
+        });
+      });
+    }
+  }
+
+  function saveFromForm(existing) {
+    const data = collectForm();
+    if (!data.title) data.title = 'Untitled Prompt';
+
+    if (state.editing && !existing) {
+      const np = {
+        id: uid(),
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        tags: data.tags,
+        content: data.content,
+        favorite: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      prompts.push(np);
+      savePrompts();
+      state.draftId = np.id;
+      state.editing = false;
+      toast('Prompt created', true);
+    } else if (existing) {
+      existing.title = data.title;
+      existing.description = data.description;
+      existing.category = data.category;
+      existing.tags = data.tags;
+      existing.content = data.content;
+      existing.updatedAt = new Date().toISOString();
+      savePrompts();
+      state.editing = false;
+      toast('Changes saved', true);
+    }
+
+    renderAll();
+  }
+
+  /* ---------------- prompt actions ---------------- */
+
+  function newPrompt() {
+    state.editing = true;
+    state.draftId = null;
+    state.category = 'All';
+    state.query = '';
+    $('searchInput').value = '';
+    $('clearSearch').classList.remove('visible');
+    renderAll();
+    document.body.classList.add('show-editor');
+  }
+
+  function selectPrompt(id) {
+    state.draftId = id;
+    state.editing = false;
+    renderAll();
+    document.body.classList.add('show-editor');
+  }
+
+  function toggleFavorite(id) {
+    const p = prompts.find((x) => x.id === id);
+    if (!p) return;
+    p.favorite = !p.favorite;
+    p.updatedAt = new Date().toISOString();
+    savePrompts();
+    renderList();
+    const favEl = document.querySelector('.pl-card.selected .fav-btn, .pl-card .fav-btn.active');
+    if (favEl) { favEl.classList.remove('anim'); void favEl.offsetWidth; favEl.classList.add('anim'); }
+    toast(p.favorite ? 'Added to favorites' : 'Removed from favorites', true);
+  }
+
+  function duplicatePrompt(id) {
+    const p = prompts.find((x) => x.id === id);
+    if (!p) return;
+    const copy = JSON.parse(JSON.stringify(p));
+    copy.id = uid();
+    copy.title = p.title + ' (Copy)';
+    copy.favorite = false;
+    copy.createdAt = new Date().toISOString();
+    copy.updatedAt = new Date().toISOString();
+    prompts.push(copy);
+    savePrompts();
+    state.draftId = copy.id;
+    state.editing = false;
+    renderAll();
+    toast('Duplicate created', true);
+  }
+
+  function deletePrompt(id) {
+    prompts = prompts.filter((p) => p.id !== id);
+    savePrompts();
+    if (state.draftId === id) state.draftId = null;
+    state.editing = false;
+    renderAll();
+    toast('Prompt deleted', true);
+  }
+
+  async function copyPrompt(id) {
+    const p = prompts.find((x) => x.id === id);
+    if (!p) return;
+    try {
+      await navigator.clipboard.writeText(p.content);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = p.content;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    toast('Prompt copied!', true);
+  }
+
+  /* ---------------- confirm modal ---------------- */
+
+  let confirmCb = null;
+
+  function openConfirm(title, msg, okLabel, cb) {
+    $('confirmTitle').textContent = title;
+    $('confirmMsg').textContent = msg;
+    $('confirmOk').textContent = okLabel;
+    confirmCb = cb;
+    $('confirmOverlay').classList.add('open');
+  }
+
+  function closeConfirm() { $('confirmOverlay').classList.remove('open'); confirmCb = null; }
+
+  $('confirmOk').addEventListener('click', () => {
+    closeConfirm();
+    if (confirmCb) confirmCb();
+  });
+  $('confirmCancel').addEventListener('click', closeConfirm);
+  $('confirmOverlay').addEventListener('click', (e) => { if (e.target === $('confirmOverlay')) closeConfirm(); });
+
+  /* ---------------- settings ---------------- */
+
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    document.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('active', b.dataset.themeVal === t));
+  }
+
+  function openSettings() {
+    const cats = getAllCategories().filter((c) => c !== 'All');
+    const sel = $('setDefaultCat');
+    sel.innerHTML = cats.map((c) => '<option value="' + esc(c) + '"' + (c === settings.defaultCategory ? ' selected' : '') + '>' + esc(c) + '</option>').join('');
+    applyTheme(settings.theme);
+    $('settingsOverlay').classList.add('open');
+  }
+
+  function exportPrompts() {
+    const data = { app: 'Dolz Master Prompt', version: 1, exportedAt: new Date().toISOString(), prompts: prompts };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'dolz-master-prompt-export.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+    toast('Library exported', true);
+  }
+
+  function importPrompts(files) {
+    const file = files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        let data = JSON.parse(reader.result);
+        let arr = Array.isArray(data) ? data : (data && Array.isArray(data.prompts) ? data.prompts : null);
+        if (!arr) throw new Error('format');
+        let count = 0;
+        arr.forEach((item) => {
+          if (!item || typeof item !== 'object') return;
+          const title = String(item.title || '').trim() || 'Untitled Prompt';
+          const content = String(item.content || '');
+          const np = {
+            id: uid(),
+            title: title,
+            description: String(item.description || ''),
+            category: String(item.category || 'Other'),
+            tags: Array.isArray(item.tags) ? item.tags.map(String) : [],
+            favorite: !!item.favorite,
+            content: content,
+            createdAt: item.createdAt || new Date().toISOString(),
+            updatedAt: item.updatedAt || new Date().toISOString()
+          };
+          prompts.push(np);
+          count++;
+        });
+        savePrompts();
+        renderAll();
+        toast('Imported ' + count + ' prompts', true);
+      } catch (err) {
+        toast('Import failed: invalid JSON', false);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function clearAllData() {
+    openConfirm('Clear all data?', 'This will permanently delete every prompt. This action cannot be undone.', 'Clear all', () => {
+      prompts = [];
+      settings.extraCategories = [];
+      savePrompts();
+      saveSettings();
+      state.draftId = null;
+      state.editing = false;
+      state.category = 'All';
+      renderAll();
+      toast('All prompts cleared', true);
+    });
+  }
+
+  /* ---------------- render all ---------------- */
+
+  function renderAll() {
+    renderNav();
+    renderChips();
+    renderList();
+    renderEditor();
+    document.body.classList.toggle('show-editor', state.editing || state.draftId !== null);
+  }
+
+  /* ---------------- events ---------------- */
+
+  document.querySelectorAll('.nav-view').forEach((b) => {
+    b.addEventListener('click', () => {
+      state.view = b.dataset.view;
+      state.category = 'All';
+      state.query = '';
+      $('searchInput').value = '';
+      $('clearSearch').classList.remove('visible');
+      renderAll();
+      if (b.dataset.view === 'categories') {
+        $('chips').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+
+  $('searchInput').addEventListener('input', (e) => {
+    state.query = e.target.value;
+    $('clearSearch').classList.toggle('visible', !!e.target.value);
+    renderList();
+  });
+
+  $('clearSearch').addEventListener('click', () => {
+    state.query = '';
+    $('searchInput').value = '';
+    $('clearSearch').classList.remove('visible');
+    renderList();
+    $('searchInput').focus();
+  });
+
+  $('newBtn').addEventListener('click', newPrompt);
+
+  $('filterBtn').addEventListener('click', () => {
+    const chips = $('chips');
+    chips.classList.toggle('toggle');
+    chips.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  $('backBtn').addEventListener('click', () => {
+    document.body.classList.remove('show-editor');
+  });
+
+  $('settingsBtn').addEventListener('click', openSettings);
+  $('settingsClose').addEventListener('click', () => $('settingsOverlay').classList.remove('open'));
+  $('settingsOverlay').addEventListener('click', (e) => { if (e.target === $('settingsOverlay')) $('settingsOverlay').classList.remove('open'); });
+
+  document.querySelectorAll('.seg button').forEach((b) => {
+    b.addEventListener('click', () => {
+      settings.theme = b.dataset.themeVal;
+      applyTheme(settings.theme);
+      saveSettings();
+    });
+  });
+
+  $('setDefaultCat').addEventListener('change', (e) => {
+    settings.defaultCategory = e.target.value;
+    saveSettings();
+  });
+
+  $('exportBtn').addEventListener('click', exportPrompts);
+
+  const importInput = $('importInput');
+  importInput.addEventListener('change', (e) => {
+    importPrompts(e.target.files);
+    e.target.value = '';
+  });
+
+  $('clearDataBtn').addEventListener('click', clearAllData);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      $('confirmOverlay').classList.remove('open');
+      $('settingsOverlay').classList.remove('open');
+    }
+  });
+
+  /* ---------------- boot ---------------- */
+
+  loadData();
+  renderAll();
+  </script>
+</body>
+</html>

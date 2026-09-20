@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80">
+  <!-- Background -->
+  <rect width="200" height="80" fill="#0a0a12" rx="8"/>
+  
+  <!-- Pixel-art fist icon -->
+  <g transform="translate(15, 15)">
+    <!-- Fist base -->
+    <rect x="8" y="8" width="8" height="8" fill="#FFB62B"/>
+    <rect x="16" y="8" width="8" height="8" fill="#FFB62B"/>
+    <rect x="24" y="8" width="8" height="8" fill="#FFB62B"/>
+    <rect x="32" y="8" width="8" height="8" fill="#FFB62B"/>
+    <!-- Fingers -->
+    <rect x="8" y="16" width="8" height="8" fill="#FFB62B"/>
+    <rect x="16" y="16" width="8" height="8" fill="#FFB62B"/>
+    <rect x="24" y="16" width="8" height="8" fill="#FFB62B"/>
+    <rect x="32" y="16" width="8" height="8" fill="#FFB62B"/>
+    <!-- Palm -->
+    <rect x="8" y="24" width="32" height="8" fill="#FFB62B"/>
+    <rect x="8" y="32" width="32" height="8" fill="#FFB62B"/>
+    <!-- Thumb -->
+    <rect x="0" y="16" width="8" height="8" fill="#FFB62B"/>
+    <rect x="0" y="24" width="8" height="8" fill="#FFB62B"/>
+  </g>
+  
+  <!-- Title: THE -->
+  <text x="75" y="30" font-family="'Press Start 2P', monospace" font-size="12" fill="#FFB62B">THE</text>
+  
+  <!-- Title: KAPLA -->
+  <text x="75" y="55" font-family="'Press Start 2P', monospace" font-size="18" fill="#FFB62B">KAPLA</text>
+  
+  <!-- Subtitle -->
+  <text x="75" y="70" font-family="'Press Start 2P', monospace" font-size="6" fill="#6b7280">MMA MANAGER</text>
+  
+  <!-- Decorative line -->
+  <rect x="75" y="58" width="110" height="2" fill="#FFB62B" opacity="0.3"/>
+</svg>

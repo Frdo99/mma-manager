@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klik Oyen! — DOLZ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF7;
+      --sunny: #FFC832;
+      --coral: #FFB4C4;
+      --lavender: #C5B8F0;
+      --mint: #B6E5C8;
+      --peach: #FFD4A8;
+      --sky: #A8D9F0;
+      --ink: #3A2E2A;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      min-height: 100dvh;
+      background: var(--bg);
+      font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- decorative blobs ---------- */
+    .blob {
+      position: absolute;
+      border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+      opacity: 0.55;
+      filter: blur(1px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatBlob 6s ease-in-out infinite;
+    }
+
+    /* ---------- header ---------- */
+    .topbar {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      border-radius: 9999px;
+      padding: 8px 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    .brand-pill .cat {
+      font-size: 28px;
+      animation: wiggle 2s ease-in-out infinite;
+    }
+
+    .brand-pill .label {
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--ink);
+    }
+
+    /* ---------- main ---------- */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px 24px;
+      position: relative;
+      z-index: 5;
+      gap: 16px;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .screen.visible { display: flex; }
+
+    .cat-big-frame { position: relative; }
+
+    .cat-big {
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 98px;
+      line-height: 1;
+      filter: drop-shadow(0 8px 16px rgba(255,180,76,0.4));
+      animation: oyenBob 2.4s ease-in-out infinite;
+    }
+
+    .speech {
+      position: absolute;
+      font-family: "Caveat", cursive;
+      font-size: 26px;
+      color: var(--coral);
+      display: block;
+      white-space: nowrap;
+    }
+
+    .title-big {
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(40px, 9vw, 64px);
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .desc {
+      font-size: 18px;
+      color: var(--ink);
+      opacity: 0.75;
+      line-height: 1.5;
+      max-width: 360px;
+      margin: 0;
+    }
+
+    .caveat {
+      font-family: "Caveat", cursive;
+      color: var(--ink);
+      opacity: 0.8;
+      font-size: 24px;
+    }
+
+    /* ---------- buttons ---------- */
+    .pill-btn {
+      background: var(--sunny);
+      color: var(--ink);
+      border: none;
+      border-radius: 9999px;
+      padding: 18px 44px;
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.12), 0 10px 22px rgba(0,0,0,0.10);
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .pill-btn:active {
+      transform: translateY(4px);
+    }
+
+    .pill-btn--sunny { background: var(--sunny); }
+    .pill-btn--lavender { background: var(--lavender); }
+
+    .btn-cta { font-size: 30px; padding: 20px 56px; }
+
+    /* ---------- stat pills ---------- */
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-pill {
+      background: #FFFFFF;
+      border-radius: 9999px;
+      padding: 10px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      border: 3px solid var(--sunny);
+      min-width: 90px;
+    }
+
+    .stat-pill .lbl {
+      font-family: "Caveat", cursive;
+      font-size: 20px;
+      color: var(--ink);
+      opacity: 0.7;
+      line-height: 1;
+    }
+
+    .stat-pill .val {
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 30px;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    /* ---------- playfield ---------- */
+    .play-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .playfield {
+      width: 100%;
+      height: min(62vh, 520px);
+      min-height: 320px;
+      background: linear-gradient(135deg, var(--mint) 0%, var(--sky) 100%);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.10), inset 0 0 0 4px rgba(255,255,255,0.4);
+      touch-action: manipulation;
+    }
+
+    .hint {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-family: "Caveat", cursive;
+      font-size: 28px;
+      color: var(--ink);
+      opacity: 0.5;
+      text-align: center;
+      padding: 20px;
+      pointer-events: none;
+    }
+
+    .hint.visible { display: flex; }
+
+    .miss-text {
+      font-family: "Caveat", cursive;
+      font-size: 22px;
+      color: var(--ink);
+      opacity: 0.6;
+      text-align: center;
+    }
+
+    /* ---------- oyen ---------- */
+    .oyen {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      animation: oyenAppear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .oyen-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: var(--coral);
+      opacity: 0.5;
+      animation: pulseRing 1s ease-out infinite;
+    }
+
+    .oyen-round {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 4px solid var(--coral);
+    }
+
+    .pop {
+      position: absolute;
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      color: var(--sunny);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: popFloat 0.7s ease-out forwards;
+    }
+
+    /* ---------- end screen ---------- */
+    .end-head {
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(32px, 7vw, 48px);
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .record-tag {
+      font-family: "Caveat", cursive;
+      font-size: 30px;
+      color: var(--coral);
+      animation: wiggle 1.5s ease-in-out infinite;
+    }
+
+    /* ---------- dashboard ---------- */
+    .dash {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 400px;
+      background: #FFFFFF;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.10);
+      animation: dashIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .record-banner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--sunny), #ffb347);
+      border-radius: 18px;
+      padding: 18px 16px;
+      animation: wiggle 1.5s ease-in-out infinite;
+    }
+
+    .record-star { font-size: 44px; line-height: 1; }
+
+    .record-title {
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+      margin: 0;
+    }
+
+    .record-sub {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    .record-form {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .record-name-input {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 16px;
+      border: 2px solid rgba(58,46,42,0.25);
+      border-radius: 9999px;
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .record-name-input:focus {
+      border-color: var(--ink);
+    }
+
+    .save-btn {
+      padding: 12px 22px;
+      font-size: 16px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.12), 0 8px 18px rgba(0,0,0,0.10);
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .dash-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: #FAFAF7;
+      border: 3px solid var(--sunny);
+      border-radius: 16px;
+      padding: 14px 10px;
+    }
+
+    .dash-card--wide {
+      grid-column: span 2;
+    }
+
+    .dash-card .lbl {
+      font-family: "Caveat", cursive;
+      font-size: 20px;
+      color: var(--ink);
+      opacity: 0.7;
+      line-height: 1;
+    }
+
+    .dash-card .val {
+      font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 34px;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .record-holder {
+      font-family: "Caveat", cursive;
+      font-size: 22px;
+      color: var(--ink);
+      opacity: 0.75;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .record-holder[hidden],
+    .record-banner[hidden] {
+      display: none;
+    }
+
+    .record-holder b { opacity: 1; }
+
+    @keyframes dashIn {
+      0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ---------- keyframes ---------- */
+    @keyframes oyenBob {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+    }
+    @keyframes oyenAppear {
+      0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+      60% { transform: scale(1.15) rotate(5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes popFloat {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+      100% { transform: translate(-50%, -140%) scale(1.4); opacity: 0; }
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+    @keyframes floatBlob {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(10px, -14px) rotate(8deg); }
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.8); opacity: 0.6; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="blob" style="top:-40px; left:-30px; width:140px; height:140px; background:var(--coral); animation-duration:6s;"></div>
+  <div class="blob" style="top:60px; right:-20px; width:100px; height:100px; background:var(--lavender); animation-duration:7s; animation-delay:1s;"></div>
+  <div class="blob" style="bottom:-30px; left:40px; width:120px; height:120px; background:var(--mint); animation-duration:8s; animation-delay:2s;"></div>
+  <div class="blob" style="bottom:80px; right:30px; width:80px; height:80px; background:var(--peach); animation-duration:5.5s; animation-delay:.5s;"></div>
+  <div class="blob" style="top:40%; left:-20px; width:90px; height:90px; background:var(--sky); animation-duration:9s; animation-delay:3s;"></div>
+
+  <header class="topbar">
+    <div class="brand-pill">
+      <span class="cat">🐱</span>
+      <span class="label">Klik Oyen!</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- START -->
+    <div class="screen visible" id="screenStart">
+      <div class="cat-big-frame">
+        <div class="cat-big">🐱</div>
+        <span class="speech" style="top:-14px; right:-70px; transform:rotate(12deg); color:var(--coral);">Saya Oyen! 🐾</span>
+      </div>
+      <h1 class="title-big">Klik Oyen!</h1>
+      <p class="desc">Tap kucing oren comel tu sebelum masa habis! Setiap tap dapat +1 mata. 🍊</p>
+      <button class="pill-btn pill-btn--sunny btn-cta" id="btnStart">Mula! 🚀</button>
+      <div class="caveat" id="startHigh" style="display:none;"></div>
+    </div>
+
+    <!-- PLAY -->
+    <div class="screen play-wrap" id="screenPlay">
+      <div class="stats-row">
+        <div class="stat-pill" style="border-color:var(--sunny);"><span class="lbl">Skor</span><span class="val" id="statScore">0</span></div>
+        <div class="stat-pill" style="border-color:var(--coral);"><span class="lbl">Masa</span><span class="val" id="statTime">30</span></div>
+        <div class="stat-pill" style="border-color:var(--lavender);"><span class="lbl">Tertinggi</span><span class="val" id="statHigh">0</span></div>
+      </div>
+      <div class="playfield" id="playfield">
+        <div class="blob" style="top:20px; left:20px; width:70px; height:70px; background:var(--peach); opacity:0.4; animation-duration:6s;"></div>
+        <div class="blob" style="bottom:30px; right:40px; width:50px; height:50px; background:var(--coral); opacity:0.4; animation-duration:5s;"></div>
+        <div class="blob" style="top:50%; right:20px; width:60px; height:60px; background:var(--lavender); opacity:0.35; animation-duration:7s;"></div>
+        <div class="hint visible" id="hint">Cari Oyen... tekan dia! 👀</div>
+      </div>
+      <div class="miss-text" id="missText">Hebat! Teruskan! ✨</div>
+    </div>
+
+    <!-- END -->
+    <div class="screen" id="screenEnd">
+      <div class="cat-big-frame">
+        <div class="cat-big" style="width:110px; height:110px; font-size:77px;">🐱</div>
+        <span class="speech" id="endSpeech" style="top:-22px; right:-46px; transform:rotate(-8deg); color:var(--lavender);">Cuba lagi!</span>
+      </div>
+      <h2 class="end-head">Masa Habis!</h2>
+
+      <div class="dash" id="dashGame">
+        <!-- SPECIAL: new record dashboard -->
+        <div class="record-banner" id="recordBanner" hidden>
+          <span class="record-star">🏆</span>
+          <h3 class="record-title">REKOD BAHARU!</h3>
+          <p class="record-sub">Awak cipta rekod tertinggi DOLZ! Masukkan nama awak:</p>
+          <div class="record-form">
+            <input type="text" id="recordName" class="record-name-input" maxlength="20" placeholder="Nama awak..." autocomplete="off">
+            <button class="pill-btn pill-btn--lavender save-btn" id="saveRecord">Simpan 🎉</button>
+          </div>
+        </div>
+
+        <!-- dashboard stats -->
+        <div class="dash-grid" id="dashStats">
+          <div class="dash-card" style="border-color:var(--sunny);">
+            <span class="lbl">Skor Awak</span>
+            <span class="val" id="endScore">0</span>
+          </div>
+          <div class="dash-card" style="border-color:var(--coral);">
+            <span class="lbl">Terlepas</span>
+            <span class="val" id="endMiss">0</span>
+          </div>
+          <div class="dash-card dash-card--wide" style="border-color:var(--lavender);">
+            <span class="lbl">Skor Tertinggi</span>
+            <span class="val" id="endHigh">0</span>
+          </div>
+        </div>
+
+        <div class="record-holder" id="recordHolder"></div>
+      </div>
+
+      <button class="pill-btn pill-btn--lavender btn-cta" id="btnAgain">Main Lagi 🔁</button>
+    </div>
+  </main>
+
+  <script>
+    const CANDY_COLORS = {
+      bg: '#FAFAF7', sunny: '#FFC832', coral: '#FFB4C4', lavender: '#C5B8F0',
+      mint: '#B6E5C8', peach: '#FFD4A8', sky: '#A8D9F0', ink: '#3A2E2A'
+    };
+    const PLAYFIELD_COLORS = [CANDY_COLORS.coral, CANDY_COLORS.lavender, CANDY_COLORS.mint, CANDY_COLORS.peach, CANDY_COLORS.sky, CANDY_COLORS.sunny];
+    const ROUND_DURATION = 30;
+    const OYEN_LIFETIME = 1000;
+    const OYEN_INTERVAL = 850;
+
+    const screenStart = document.getElementById('screenStart');
+    const screenPlay = document.getElementById('screenPlay');
+    const screenEnd = document.getElementById('screenEnd');
+    const playfield = document.getElementById('playfield');
+    const hint = document.getElementById('hint');
+    const btnStart = document.getElementById('btnStart');
+    const btnAgain = document.getElementById('btnAgain');
+
+    let screen = 'start';
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('klik-oyen-hs') || '0', 10);
+    let timeLeft = ROUND_DURATION;
+    let misses = 0;
+    let oyen = null;
+    let oyenTimer = null;
+    let intervalId = null;
+    let tickId = null;
+    let audioCtx = null;
+    let record = { score: 0, name: '' };
+
+    function loadRecord() {
+      try {
+        const r = JSON.parse(localStorage.getItem('klik-oyen-record') || 'null');
+        if (r && typeof r.score === 'number' && typeof r.name === 'string') record = r;
+      } catch (e) {}
+    }
+
+    function saveRecord(name) {
+      record = { score: highScore, name: (name || 'Pemain').trim() || 'Pemain' };
+      localStorage.setItem('klik-oyen-record', JSON.stringify(record));
+      localStorage.setItem('klik-oyen-hs', String(highScore));
+    }
+
+    loadRecord();
+    if (highScore < record.score) {
+      highScore = record.score;
+      localStorage.setItem('klik-oyen-hs', String(highScore));
+    }
+
+    function showScreen(s) {
+      screen = s;
+      screenStart.classList.toggle('visible', s === 'start');
+      screenPlay.classList.toggle('visible', s === 'play');
+      screenEnd.classList.toggle('visible', s === 'end');
+    }
+
+    function setStats() {
+      document.getElementById('statScore').textContent = score;
+      document.getElementById('statTime').textContent = timeLeft;
+      document.getElementById('statHigh').textContent = highScore;
+      document.getElementById('endScore').textContent = score;
+      document.getElementById('endHigh').textContent = highScore;
+    }
+
+    function setStartHigh() {
+      const el = document.getElementById('startHigh');
+      if (highScore > 0) {
+        el.style.display = 'block';
+        el.innerHTML = 'Skor Tertinggi: ' + highScore + ' ⭐' +
+          (record.score >= highScore && record.name
+            ? ' oleh <b>' + escapeHtml(record.name) + '</b>'
+            : '');
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function playBeep(freq, duration, type) {
+      try {
+        if (!audioCtx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          audioCtx = new Ctx();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type || 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function clearTimers() {
+      if (oyenTimer) { clearTimeout(oyenTimer); oyenTimer = null; }
+      if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      if (tickId) { clearInterval(tickId); tickId = null; }
+    }
+
+    function removeOyen() {
+      if (oyen) { oyen.remove(); oyen = null; }
+      if (oyenTimer) { clearTimeout(oyenTimer); oyenTimer = null; }
+    }
+
+    function spawnOyen() {
+      if (oyenVisible()) return;
+      const rect = playfield.getBoundingClientRect();
+      const margin = 50;
+      const x = margin + Math.random() * Math.max(20, rect.width - margin * 2 - 80);
+      const y = margin + Math.random() * Math.max(20, rect.height - margin * 2 - 80);
+      const colorIdx = Math.floor(Math.random() * PLAYFIELD_COLORS.length);
+
+      const el = document.createElement('div');
+      el.className = 'oyen';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+
+      const ring = document.createElement('div');
+      ring.className = 'oyen-ring';
+      ring.style.background = PLAYFIELD_COLORS[colorIdx];
+
+      const round = document.createElement('div');
+      round.className = 'oyen-round';
+      round.style.borderColor = PLAYFIELD_COLORS[colorIdx];
+      round.textContent = '🐱';
+
+      el.appendChild(ring);
+      el.appendChild(round);
+      el.addEventListener('pointerdown', handleTap);
+      playfield.appendChild(el);
+
+      oyen = el;
+      hint.classList.remove('visible');
+
+      oyenTimer = setTimeout(() => {
+        if (oyen) {
+          removeOyen();
+          misses++;
+          document.getElementById('missText').textContent = misses > 0
+            ? 'Cepat sikit! Terlepas ' + misses + ' kali 🙀'
+            : 'Hebat! Teruskan! ✨';
+        }
+      }, OYEN_LIFETIME);
+    }
+
+    function oyenVisible() {
+      return oyen !== null;
+    }
+
+    function handleTap(e) {
+      e.preventDefault();
+      if (!oyen) return;
+      score++;
+      setStats();
+      playBeep(880, 0.14, 'triangle');
+
+      const rect = playfield.getBoundingClientRect();
+      const px = (e.clientX || 0) - rect.left;
+      const py = (e.clientY || 0) - rect.top;
+
+      const pop = document.createElement('div');
+      pop.className = 'pop';
+      pop.textContent = '+1';
+      pop.style.left = px + 'px';
+      pop.style.top = py + 'px';
+      playfield.appendChild(pop);
+      setTimeout(() => pop.remove(), 700);
+
+      removeOyen();
+    }
+
+    function startGame() {
+      clearTimers();
+      removeOyen();
+      score = 0;
+      misses = 0;
+      timeLeft = ROUND_DURATION;
+      setStats();
+      document.getElementById('missText').textContent = 'Hebat! Teruskan! ✨';
+      hint.classList.add('visible');
+      showScreen('play');
+      playBeep(660, 0.1, 'sine');
+
+      setTimeout(spawnOyen, 400);
+      intervalId = setInterval(() => {
+        if (!oyenVisible()) spawnOyen();
+      }, OYEN_INTERVAL);
+      tickId = setInterval(() => {
+        timeLeft--;
+        setStats();
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function endGame() {
+      clearTimers();
+      removeOyen();
+      const prevHigh = highScore;
+      const isRecord = score > prevHigh;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('klik-oyen-hs', String(highScore));
+      }
+      setStats();
+      document.getElementById('endSpeech').textContent = isRecord ? 'Rekod baru! 🎉' : 'Cuba lagi!';
+      document.getElementById('endSpeech').style.color = isRecord ? 'var(--coral)' : 'var(--lavender)';
+
+      document.getElementById('endScore').textContent = score;
+      document.getElementById('endMiss').textContent = misses;
+      document.getElementById('endHigh').textContent = highScore;
+
+      const banner = document.getElementById('recordBanner');
+      const holderBox = document.getElementById('recordHolder');
+      const nameInput = document.getElementById('recordName');
+
+      if (isRecord) {
+        banner.hidden = false;
+        holderBox.hidden = true;
+        nameInput.value = '';
+        setTimeout(() => nameInput.focus(), 350);
+      } else {
+        banner.hidden = true;
+        holderBox.hidden = false;
+        holderBox.innerHTML = record.score > 0
+          ? '👑 Rekod dipegang oleh <b>' + escapeHtml(record.name) + '</b> dengan ' + record.score + ' mata'
+          : 'Jadilah yang pertama mencipta rekod! 🐾';
+      }
+
+      showScreen('end');
+      playBeep(440, 0.2, 'sine');
+      setTimeout(() => playBeep(550, 0.2, 'sine'), 120);
+      setTimeout(() => playBeep(660, 0.3, 'sine'), 260);
+      setStartHigh();
+    }
+
+    function submitRecord() {
+      const name = document.getElementById('recordName').value.trim();
+      saveRecord(name);
+      const banner = document.getElementById('recordBanner');
+      const holderBox = document.getElementById('recordHolder');
+      banner.hidden = true;
+      holderBox.hidden = false;
+      holderBox.innerHTML = '🏆 Rekod baharu oleh <b>' + escapeHtml(record.name) + '</b> — ' + record.score + ' mata!';
+      setStartHigh();
+    }
+
+    document.getElementById('saveRecord').addEventListener('click', submitRecord);
+    document.getElementById('recordName').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitRecord();
+    });
+
+    btnStart.addEventListener('click', startGame);
+    btnAgain.addEventListener('click', startGame);
+
+    highScore = parseInt(localStorage.getItem('klik-oyen-hs') || '0', 10);
+    setStats();
+    setStartHigh();
+    showScreen('start');
+  </script>
+</body>
+</html>
